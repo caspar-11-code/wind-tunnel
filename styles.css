@@ -29,6 +29,8 @@
 
 * { box-sizing: border-box; }
 html, body { height: 100%; }
+/* keep the hidden attribute authoritative even on flex/grid elements */
+[hidden] { display: none !important; }
 
 body {
   margin: 0;

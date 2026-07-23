@@ -294,8 +294,8 @@
   function laneY(lane) { return ((lane + 0.5) / nLanes) * (sim.ny - 2) + 1; }
   function initParticles() {
     const ny = sim.ny, nx = sim.nx;
-    nLanes = Math.min(46, Math.max(18, Math.round(ny * 0.42)));
-    nParticles = nLanes * 120;
+    nLanes = Math.min(44, Math.max(16, Math.round(ny * 0.40)));
+    nParticles = nLanes * 90;
     P = new Float32Array(nParticles * 2);
     pLane = new Float32Array(nParticles);
     for (let k = 0; k < nParticles; k++) {
@@ -318,9 +318,12 @@
   }
   function advectAndDraw(dt) {
     const nx = sim.nx, ny = sim.ny, N = nx * ny, barrier = sim.barrier;
-    ctx.fillStyle = "rgba(233, 240, 247, 0.72)";
     const sxk = dispW / nx, syk = dispH / ny;
     const dot = Math.max(1, dispW / nx * 0.9);
+    // batch every particle into one path and a single fill() — far cheaper
+    // than thousands of individual fillRect calls per frame
+    ctx.fillStyle = "rgba(236, 243, 250, 0.88)";
+    ctx.beginPath();
     for (let k = 0; k < nParticles; k++) {
       let x = P[k * 2], y = P[k * 2 + 1];
       sampleU(x, y); x += tmpv[0] * dt; y += tmpv[1] * dt;
@@ -328,8 +331,9 @@
       if (x >= nx - 1 || x < 1 || y < 1 || y >= ny - 1 || (gi >= 0 && gi < N && barrier[gi])) {
         respawn(k); x = P[k * 2]; y = P[k * 2 + 1];
       } else { P[k * 2] = x; P[k * 2 + 1] = y; }
-      ctx.fillRect(x * sxk, (ny - y) * syk, dot, dot);
+      ctx.rect(x * sxk, (ny - y) * syk, dot, dot);
     }
+    ctx.fill();
   }
 
   /* ---------------- params ---------------- */
@@ -488,7 +492,7 @@
     const ny = mobile ? 82 : 116;
     const aspect = rect.width > 0 ? rect.width / rect.height : 2;
     const nx = Math.max(120, Math.min(320, Math.round(ny * aspect)));
-    stepsPerFrame = mobile ? 8 : 12;
+    stepsPerFrame = mobile ? 7 : 10;
     sim = window.WindTunnelSim.createSim(nx, ny);
     sim.setParams(u0FromSlider(65), nuFromSlider(35));
     sim.resetFlow();

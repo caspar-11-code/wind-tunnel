@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+
+  <!-- Security: strict CSP. No inline scripts/styles, no external origins. -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; img-src 'self' data: blob:; style-src 'self'; script-src 'self'; connect-src 'self'; font-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'" />
+  <meta name="referrer" content="no-referrer" />
+
+  <title>Wind Tunnel — draw a shape, watch the air flow</title>
+  <link rel="canonical" href="https://tunnel.gamestheory.org/" />
+  <meta name="description" content="A tiny in-browser wind tunnel. Draw any 2D shape and watch real airflow bend around it — streamlines, wake, vortices, drag and lift. Real fluid dynamics (Lattice-Boltzmann), no accounts, no tracking." />
+
+  <!-- Open Graph / social sharing -->
+  <meta property="og:title" content="Wind Tunnel — draw a shape, watch the air flow" />
+  <meta property="og:description" content="Draw a 2D shape and watch real airflow bend around it: streamlines, wake, vortices, drag and lift. Real fluid dynamics in your browser." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://tunnel.gamestheory.org/" />
+  <meta property="og:image" content="https://tunnel.gamestheory.org/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://tunnel.gamestheory.org/og-image.jpg" />
+
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icon-180.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#0b0f17" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Wind Tunnel",
+    "url": "https://tunnel.gamestheory.org/",
+    "description": "A tiny in-browser wind tunnel. Draw a 2D shape and watch real airflow bend around it — streamlines, wake, vortices, drag and lift. Real fluid dynamics (Lattice-Boltzmann).",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any (modern web browser)",
+    "browserRequirements": "Requires JavaScript and HTML5 canvas",
+    "isAccessibleForFree": true,
+    "inLanguage": ["en", "pl"],
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "isPartOf": { "@type": "WebSite", "name": "Games Theory", "url": "https://gamestheory.org/" }
+  }
+  </script>
+
+  <link rel="stylesheet" href="styles.css" />
+  <script src="sim.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#canvas-wrap" data-i18n="skip_link">Skip to the tunnel</a>
+
+  <header class="topbar">
+    <div class="brand">
+      <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+        <path class="bm-wing" d="M4 20 C12 20 18 12 28 11 C21 15 18 21 8 23 Z" />
+        <path class="bm-flow" d="M3 8 H16" />
+        <path class="bm-flow" d="M3 13 H12" />
+        <path class="bm-flow" d="M3 26 H14" />
+      </svg>
+      <div class="brand__text">
+        <span class="brand__name">WIND<em>TUNNEL</em></span>
+        <span class="brand__tag" data-i18n="brand_tag">draw it, fly it</span>
+      </div>
+    </div>
+
+    <nav class="toolbar" aria-label="Options" data-i18n-aria="aria_options">
+      <a class="icon-btn icon-btn--home" href="https://gamestheory.org/" title="gamestheory.org" aria-label="All games" data-i18n-aria="aria_allgames" data-i18n-title="title_home">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12 L12 4 L20 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><rect x="7" y="12" width="10" height="8" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+      </a>
+      <button id="btn-lang" class="icon-btn icon-btn--lang" type="button" aria-label="Language" data-i18n-aria="aria_lang">EN</button>
+      <button id="btn-help" class="icon-btn" type="button" aria-label="How it works" title="How it works" data-i18n-aria="aria_help" data-i18n-title="aria_help">?</button>
+    </nav>
+  </header>
+
+  <main class="stage">
+    <!-- The tunnel -->
+    <section class="tunnel-panel" aria-label="Wind tunnel" data-i18n-aria="aria_windtunnel">
+      <div id="canvas-wrap" class="canvas-wrap">
+        <canvas id="view" class="view" aria-label="Wind tunnel simulation" data-i18n-aria="aria_sim"></canvas>
+        <div id="regime-badge" class="regime-badge" aria-hidden="true">—</div>
+        <div id="hint-draw" class="hint-draw" data-i18n="hint_draw">Draw a shape in the airflow ✏️</div>
+      </div>
+
+      <!-- Live readouts -->
+      <div class="readouts" aria-label="Live measurements" data-i18n-aria="aria_measures">
+        <div class="ro">
+          <span class="ro__val" id="ro-re">—</span>
+          <span class="ro__lbl">Reynolds</span>
+        </div>
+        <div class="ro">
+          <span class="ro__val" id="ro-speed">—</span>
+          <span class="ro__lbl" data-i18n="ro_speed">wind speed</span>
+        </div>
+        <div class="ro ro--meter">
+          <span class="ro__word" id="ro-drag-word">—</span>
+          <span class="meter"><i class="meter__fill" id="ro-drag-bar"></i></span>
+          <span class="ro__lbl" data-i18n="ro_drag">drag</span>
+        </div>
+        <div class="ro ro--meter">
+          <span class="ro__word" id="ro-lift-word">—</span>
+          <span class="meter meter--center"><i class="meter__fill meter__fill--lift" id="ro-lift-bar"></i></span>
+          <span class="ro__lbl" data-i18n="ro_lift">lift</span>
+        </div>
+        <div class="ro ro--wide">
+          <span class="ro__val" id="ro-regime">—</span>
+          <span class="ro__lbl" data-i18n="ro_regime">flow regime</span>
+        </div>
+        <div class="ro ro--fps">
+          <span class="ro__val" id="ro-fps">—</span>
+          <span class="ro__lbl">FPS</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Controls -->
+    <section class="controls" aria-label="Controls" data-i18n-aria="aria_controls">
+      <!-- Tools -->
+      <div class="ctl-group">
+        <h2 class="ctl-title" data-i18n="grp_draw">Draw</h2>
+        <div class="seg" role="group" aria-label="Tool" data-i18n-aria="aria_tool">
+          <button id="tool-draw" class="seg__btn is-active" type="button" aria-pressed="true" data-i18n="tool_draw">✏️ Draw</button>
+          <button id="tool-erase" class="seg__btn" type="button" aria-pressed="false" data-i18n="tool_erase">🩹 Erase</button>
+        </div>
+        <label class="slider">
+          <span class="slider__lbl"><span data-i18n="brush">Brush</span> <output id="out-brush">6</output></span>
+          <input id="in-brush" type="range" min="2" max="16" step="1" value="6" />
+        </label>
+        <div class="preset-row">
+          <button class="preset" type="button" data-shape="circle" data-i18n="sh_circle">● Cylinder</button>
+          <button class="preset" type="button" data-shape="airfoil" data-i18n="sh_airfoil">✈ Airfoil</button>
+          <button class="preset" type="button" data-shape="square" data-i18n="sh_square">■ Plate</button>
+          <button class="preset" type="button" data-shape="ellipse" data-i18n="sh_ellipse">⬭ Teardrop</button>
+        </div>
+        <button id="btn-clear" class="btn btn--ghost" type="button" data-i18n="clear">Clear shape</button>
+      </div>
+
+      <!-- Flow -->
+      <div class="ctl-group">
+        <h2 class="ctl-title" data-i18n="grp_flow">Flow</h2>
+        <label class="slider">
+          <span class="slider__lbl"><span data-i18n="wind">Wind speed</span> <output id="out-speed">—</output></span>
+          <input id="in-speed" type="range" min="20" max="100" step="1" value="65" />
+        </label>
+        <label class="slider">
+          <span class="slider__lbl"><span data-i18n="visc">Air &ldquo;thickness&rdquo; (viscosity)</span> <output id="out-visc">—</output></span>
+          <input id="in-visc" type="range" min="0" max="100" step="1" value="35" />
+        </label>
+        <label class="slider">
+          <span class="slider__lbl"><span data-i18n="aoa">Angle of attack</span> <output id="out-aoa">0°</output></span>
+          <input id="in-aoa" type="range" min="-25" max="25" step="1" value="8" />
+        </label>
+      </div>
+
+      <!-- Display -->
+      <div class="ctl-group">
+        <h2 class="ctl-title" data-i18n="grp_show">Show</h2>
+        <div class="seg seg--wrap" role="group" aria-label="Field" data-i18n-aria="aria_field">
+          <button class="seg__btn field-btn is-active" data-field="speed" type="button" aria-pressed="true" data-i18n="f_speed">Speed</button>
+          <button class="seg__btn field-btn" data-field="curl" type="button" aria-pressed="false" data-i18n="f_curl">Vortices</button>
+          <button class="seg__btn field-btn" data-field="pressure" type="button" aria-pressed="false" data-i18n="f_press">Pressure</button>
+          <button class="seg__btn field-btn" data-field="none" type="button" aria-pressed="false" data-i18n="f_none">Dark</button>
+        </div>
+        <label class="check">
+          <input id="in-smoke" type="checkbox" checked />
+          <span data-i18n="smoke">Smoke streamlines</span>
+        </label>
+        <div class="btn-row">
+          <button id="btn-pause" class="btn" type="button" data-i18n="pause">⏸ Pause</button>
+          <button id="btn-reset" class="btn btn--ghost" type="button" data-i18n="reset">↺ Reset flow</button>
+        </div>
+      </div>
+    </section>
+
+    <p class="disclaimer" data-i18n="disclaimer">
+      Real fluid dynamics, simplified for your browser (2D, low speed). Great for intuition — not a certified engineering tool.
+    </p>
+  </main>
+
+  <footer class="footer">
+    <p data-i18n="footer_note">A drawing you make in air. Runs entirely on your device — nothing is uploaded.</p>
+    <div class="footer__links">
+      <span class="mono" id="app-version">v1.0</span>
+      <button id="btn-how-footer" class="link-btn" type="button" data-i18n="footer_how">How it works</button>
+      <a class="link-btn link-btn--gh" href="https://github.com/caspar-11-code/wind-tunnel"
+         target="_blank" rel="noopener noreferrer" aria-label="Source code on GitHub" data-i18n-aria="aria_gh">
+        <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </footer>
+
+  <!-- How it works -->
+  <dialog id="modal-help" class="modal" aria-labelledby="help-title">
+    <form method="dialog" class="modal__head">
+      <h2 id="help-title" data-i18n="help_title">How it works</h2>
+      <button class="icon-btn" value="close" aria-label="Close" data-i18n-aria="aria_close">✕</button>
+    </form>
+    <div class="modal__body" id="help-body"></div>
+  </dialog>
+
+  <!-- live region for transient announcements -->
+  <p id="aria-live" class="visually-hidden" aria-live="polite"></p>
+  <!-- polite live region: current flow result for screen readers -->
+  <p id="sr-status" class="visually-hidden" aria-live="polite"></p>
+</body>
+</html>

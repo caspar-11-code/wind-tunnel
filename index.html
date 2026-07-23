@@ -47,9 +47,9 @@
   }
   </script>
 
-  <link rel="stylesheet" href="styles.css?v=2" />
+  <link rel="stylesheet" href="styles.css?v=3" />
   <script src="sim.js?v=2" defer></script>
-  <script src="app.js?v=2" defer></script>
+  <script src="app.js?v=3" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#canvas-wrap" data-i18n="skip_link">Skip to the tunnel</a>
@@ -80,6 +80,10 @@
   <main class="stage">
     <!-- The tunnel -->
     <section class="tunnel-panel" aria-label="Wind tunnel" data-i18n-aria="aria_windtunnel">
+      <div class="modebar" role="tablist" aria-label="Mode">
+        <button id="mode-sandbox" class="mode-btn is-active" type="button" role="tab" aria-selected="true" data-i18n="mode_sandbox">🌀 Sandbox</button>
+        <button id="mode-quiz" class="mode-btn" type="button" role="tab" aria-selected="false" data-i18n="mode_quiz">🎯 Guess the flow</button>
+      </div>
       <div id="canvas-wrap" class="canvas-wrap">
         <canvas id="view" class="view" aria-label="Wind tunnel simulation" data-i18n-aria="aria_sim"></canvas>
         <div id="regime-badge" class="regime-badge" aria-hidden="true">—</div>
@@ -172,6 +176,30 @@
         <div class="btn-row">
           <button id="btn-pause" class="btn" type="button" data-i18n="pause">⏸ Pause</button>
           <button id="btn-reset" class="btn btn--ghost" type="button" data-i18n="reset">↺ Reset flow</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quiz: guess the flow -->
+    <section class="quiz" id="quiz" hidden aria-label="Guess the flow">
+      <div class="quiz__top">
+        <span class="quiz__round" id="q-round">—</span>
+        <span class="quiz__score" id="q-score">—</span>
+      </div>
+      <h2 class="quiz__q" id="q-question">—</h2>
+      <p class="quiz__info" id="q-info"></p>
+      <div class="quiz__opts" id="q-opts"></div>
+      <div class="quiz__fb" id="q-feedback" hidden>
+        <p class="quiz__verdict" id="q-verdict"></p>
+        <p class="quiz__explain" id="q-explain"></p>
+        <button class="btn btn--primary" id="q-next" type="button">Next →</button>
+      </div>
+      <div class="quiz__result" id="q-result" hidden>
+        <p class="quiz__result-score" id="q-result-score">—</p>
+        <p class="quiz__result-sub" id="q-result-sub"></p>
+        <div class="btn-row">
+          <button class="btn btn--primary" id="q-again" type="button" data-i18n="q_again">Play again</button>
+          <button class="btn" id="q-share" type="button" data-i18n="q_share">Share</button>
         </div>
       </div>
     </section>

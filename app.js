@@ -74,6 +74,31 @@
       aria_close: "Close",
       aria_gh: "Source code on GitHub",
       sr_status: "Regime {r}. Drag {d}. Lift {l}.",
+      mode_sandbox: "🌀 Sandbox",
+      mode_quiz: "🎯 Guess the flow",
+      q_wake: "What will form in the wake behind this shape?",
+      q_lift: "Which way will the air push this shape (lift)?",
+      q_info_re: "Reynolds number ≈ {re}",
+      q_info_lift: "Read the shape and how it is tilted.",
+      opt_smooth: "Smooth, steady wake",
+      opt_street: "A vortex street (shedding)",
+      opt_up: "▲ Upward",
+      opt_down: "▼ Downward",
+      opt_zero: "≈ Almost none",
+      q_correct: "Correct!",
+      q_wrong: "Not quite",
+      q_next: "Next →",
+      q_last: "See result →",
+      q_round: "Round {n} / {t}",
+      q_scoreline: "{s} pts · streak {k}",
+      q_result_sub: "{s} / {t} right. Best {b}/{t} · longest streak {m}.",
+      q_share_text: "Wind Tunnel — Guess the flow: {s}/{t} 🎯 tunnel.gamestheory.org",
+      q_shared: "Result copied to clipboard.",
+      ex_smooth: "Low Reynolds number: viscosity keeps the flow attached, so no vortices shed.",
+      ex_street: "High Reynolds number: the flow separates and sheds alternating vortices — a Kármán street.",
+      ex_up: "The shape deflects air downward, so by reaction it is pushed up — that is lift.",
+      ex_down: "The tilt deflects air upward, so the shape is pushed down.",
+      ex_zero: "A symmetric shape head-on: the forces above and below cancel out.",
     },
     pl: {
       brand_tag: "narysuj i puść w ruch",
@@ -134,6 +159,31 @@
       aria_close: "Zamknij",
       aria_gh: "Kod źródłowy na GitHubie",
       sr_status: "Reżim: {r}. Opór: {d}. Siła nośna: {l}.",
+      mode_sandbox: "🌀 Piaskownica",
+      mode_quiz: "🎯 Zgadnij",
+      q_wake: "Co powstanie w śladzie za tym kształtem?",
+      q_lift: "W którą stronę powietrze zepchnie ten kształt (siła nośna)?",
+      q_info_re: "Liczba Reynoldsa ≈ {re}",
+      q_info_lift: "Popatrz na kształt i jego przechylenie.",
+      opt_smooth: "Gładki, ustalony ślad",
+      opt_street: "Ścieżka wirów (oderwanie)",
+      opt_up: "▲ W górę",
+      opt_down: "▼ W dół",
+      opt_zero: "≈ Prawie zero",
+      q_correct: "Dobrze!",
+      q_wrong: "Nie tym razem",
+      q_next: "Dalej →",
+      q_last: "Zobacz wynik →",
+      q_round: "Runda {n} / {t}",
+      q_scoreline: "{s} pkt · seria {k}",
+      q_result_sub: "{s} / {t} trafień. Rekord {b}/{t} · najdłuższa seria {m}.",
+      q_share_text: "Wind Tunnel — Zgadnij fizykę: {s}/{t} 🎯 tunnel.gamestheory.org",
+      q_shared: "Wynik skopiowany do schowka.",
+      ex_smooth: "Mała liczba Reynoldsa: lepkość utrzymuje przepływ przy powierzchni, wiry się nie odrywają.",
+      ex_street: "Duża liczba Reynoldsa: przepływ się odrywa i tworzy naprzemienne wiry — ścieżka Kármána.",
+      ex_up: "Kształt odchyla powietrze w dół, więc w reakcji jest pchany w górę — to siła nośna.",
+      ex_down: "Przechylenie odchyla powietrze w górę, więc kształt jest spychany w dół.",
+      ex_zero: "Kształt symetryczny na wprost: siły z góry i z dołu się znoszą.",
     },
   };
 
@@ -217,6 +267,7 @@
   let currentPreset = null;
   let paused = false;
   let stepsPerFrame = 12;
+  let inSpeedEl = null, inViscEl = null, inAoaEl = null;
 
   /* ---------------- canvas ---------------- */
   const view = document.getElementById("view");
@@ -351,6 +402,7 @@
   }
   let lastRoT = 0;
   function updateReadouts(now, fps) {
+    if (quiz.active) return; // readouts would leak the answer during a question
     if (now - lastRoT < 200) return;
     lastRoT = now;
     const L = sim.charLength();
@@ -406,12 +458,13 @@
     }
   }
   function onDown(ev) {
+    if (quiz.active) return;
     ev.preventDefault(); drawing = true; currentPreset = null;
     if (view.setPointerCapture) try { view.setPointerCapture(ev.pointerId); } catch { /**/ }
     const { gx, gy } = toGrid(ev); paintDisc(gx, gy, brush, tool === "draw"); lastPt = { gx, gy }; hideHint();
   }
   function onMove(ev) {
-    if (!drawing) return;
+    if (quiz.active || !drawing) return;
     const { gx, gy } = toGrid(ev);
     if (lastPt) {
       const dx = gx - lastPt.gx, dy = gy - lastPt.gy, dist = Math.hypot(dx, dy), steps = Math.max(1, Math.ceil(dist / (brush * 0.5)));
@@ -424,6 +477,157 @@
   function hideHint() { if (hintDraw) hintDraw.classList.add("is-hidden"); }
   function showHint() { if (hintDraw) hintDraw.classList.remove("is-hidden"); }
   function announce(msg) { if (ariaLive) { ariaLive.textContent = ""; setTimeout(() => (ariaLive.textContent = msg), 30); } }
+
+  /* ---------------- quiz: guess the flow ---------------- */
+  // Answers are ground-truth from the SAME deterministic sim (precomputed in
+  // Node); the reveal re-runs it live so the player watches it confirm.
+  const QUIZ_BANK = [
+    { type: "wake", shape: "circle", speed: 40, visc: 95, aoa: 0, answer: "smooth" },
+    { type: "wake", shape: "circle", speed: 55, visc: 55, aoa: 0, answer: "smooth" },
+    { type: "wake", shape: "square", speed: 60, visc: 80, aoa: 0, answer: "smooth" },
+    { type: "wake", shape: "circle", speed: 70, visc: 30, aoa: 0, answer: "smooth" },
+    { type: "wake", shape: "circle", speed: 85, visc: 12, aoa: 0, answer: "street" },
+    { type: "wake", shape: "circle", speed: 100, visc: 2, aoa: 0, answer: "street" },
+    { type: "wake", shape: "ellipse", speed: 75, visc: 8, aoa: 0, answer: "street" },
+    { type: "wake", shape: "circle", speed: 95, visc: 6, aoa: 0, answer: "street" },
+    { type: "lift", shape: "airfoil", speed: 70, visc: 30, aoa: 14, answer: "up" },
+    { type: "lift", shape: "airfoil", speed: 70, visc: 30, aoa: 8, answer: "up" },
+    { type: "lift", shape: "ellipse", speed: 70, visc: 30, aoa: 20, answer: "up" },
+    { type: "lift", shape: "airfoil", speed: 70, visc: 30, aoa: -14, answer: "down" },
+    { type: "lift", shape: "airfoil", speed: 70, visc: 25, aoa: -8, answer: "down" },
+    { type: "lift", shape: "circle", speed: 70, visc: 30, aoa: 0, answer: "zero" },
+    { type: "lift", shape: "square", speed: 70, visc: 30, aoa: 0, answer: "zero" },
+  ];
+  const QKEY = "gt.tunnel.quiz";
+  const quiz = { active: false, phase: "idle", order: [], round: 0, total: 6, score: 0, streak: 0, maxStreak: 0, scenario: null, picked: null, revealAt: 0 };
+  let quizBest = { best: 0, streak: 0, played: 0 };
+  try { const s = JSON.parse(localStorage.getItem(QKEY) || "{}"); if (s && typeof s === "object") quizBest = Object.assign(quizBest, s); } catch { /**/ }
+
+  function qEl(id) { return document.getElementById(id); }
+  function qShuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const tmp = a[i]; a[i] = a[j]; a[j] = tmp; } return a; }
+
+  function enterQuiz() {
+    quiz.active = true;
+    el("mode-quiz").classList.add("is-active"); el("mode-quiz").setAttribute("aria-selected", "true");
+    el("mode-sandbox").classList.remove("is-active"); el("mode-sandbox").setAttribute("aria-selected", "false");
+    document.querySelector(".controls").hidden = true;
+    qEl("quiz").hidden = false;
+    document.querySelector(".readouts").style.display = "none";
+    regimeBadge.style.display = "none";
+    hideHint();
+    startQuiz();
+  }
+  function enterSandbox() {
+    quiz.active = false;
+    el("mode-sandbox").classList.add("is-active"); el("mode-sandbox").setAttribute("aria-selected", "true");
+    el("mode-quiz").classList.remove("is-active"); el("mode-quiz").setAttribute("aria-selected", "false");
+    qEl("quiz").hidden = true;
+    document.querySelector(".controls").hidden = false;
+    document.querySelector(".readouts").style.display = "";
+    regimeBadge.style.display = "";
+    if (inSpeedEl && inViscEl) sim.setParams(u0FromSlider(+inSpeedEl.value), nuFromSlider(+inViscEl.value));
+    if (inAoaEl) aoaDeg = +inAoaEl.value;
+    sim.resetFlow();
+    currentPreset = "airfoil"; sim.stampPreset("airfoil", aoaDeg);
+    paused = false;
+  }
+
+  function startQuiz() {
+    quiz.order = qShuffle(QUIZ_BANK.slice()).slice(0, quiz.total);
+    quiz.round = 0; quiz.score = 0; quiz.streak = 0; quiz.maxStreak = 0;
+    qEl("q-result").hidden = true;
+    qEl("q-opts").hidden = false;
+    nextQuestion();
+  }
+
+  function setupScenario(sc) {
+    sim.setParams(u0FromSlider(sc.speed), nuFromSlider(sc.visc));
+    sim.resetFlow();
+    sim.stampPreset(sc.shape, sc.aoa);
+    currentPreset = null;
+    paused = true; // frozen until the player answers
+  }
+
+  function nextQuestion() {
+    quiz.round++;
+    const sc = quiz.order[quiz.round - 1];
+    quiz.scenario = sc; quiz.picked = null; quiz.phase = "question";
+    setupScenario(sc);
+    qEl("q-round").textContent = t("q_round").replace("{n}", quiz.round).replace("{t}", quiz.total);
+    qEl("q-score").textContent = t("q_scoreline").replace("{s}", quiz.score).replace("{k}", quiz.streak);
+    qEl("q-question").textContent = t(sc.type === "wake" ? "q_wake" : "q_lift");
+    if (sc.type === "wake") {
+      const L = sim.charLength(); const Re = Math.round(sim.u0 * L / sim.nu);
+      qEl("q-info").textContent = t("q_info_re").replace("{re}", Re);
+    } else {
+      qEl("q-info").textContent = t("q_info_lift");
+    }
+    const opts = sc.type === "wake"
+      ? [["smooth", "opt_smooth"], ["street", "opt_street"]]
+      : [["up", "opt_up"], ["down", "opt_down"], ["zero", "opt_zero"]];
+    const box = qEl("q-opts"); box.innerHTML = "";
+    opts.forEach(([val, key]) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "q-opt"; b.dataset.val = val; b.textContent = t(key);
+      b.addEventListener("click", () => onQuizAnswer(val));
+      box.appendChild(b);
+    });
+    qEl("q-feedback").hidden = true;
+  }
+
+  function onQuizAnswer(val) {
+    if (quiz.phase !== "question") return;
+    quiz.picked = val; quiz.phase = "revealing"; quiz.revealAt = performance.now();
+    document.querySelectorAll("#q-opts .q-opt").forEach((b) => {
+      b.disabled = true;
+      if (b.dataset.val === val) b.classList.add("is-picked");
+    });
+    paused = false; // release the flow so it develops and confirms
+  }
+
+  function showVerdict() {
+    quiz.phase = "verdict"; paused = true;
+    const sc = quiz.scenario; const correct = quiz.picked === sc.answer;
+    if (correct) { quiz.score++; quiz.streak++; if (quiz.streak > quiz.maxStreak) quiz.maxStreak = quiz.streak; }
+    else { quiz.streak = 0; }
+    document.querySelectorAll("#q-opts .q-opt").forEach((b) => {
+      if (b.dataset.val === sc.answer) b.classList.add("is-correct");
+      else if (b.dataset.val === quiz.picked) b.classList.add("is-wrong");
+    });
+    qEl("q-score").textContent = t("q_scoreline").replace("{s}", quiz.score).replace("{k}", quiz.streak);
+    const v = qEl("q-verdict");
+    v.textContent = correct ? t("q_correct") : t("q_wrong");
+    v.className = "quiz__verdict " + (correct ? "ok" : "no");
+    qEl("q-explain").textContent = t("ex_" + sc.answer);
+    qEl("q-next").textContent = quiz.round < quiz.total ? t("q_next") : t("q_last");
+    qEl("q-feedback").hidden = false;
+  }
+
+  function onQuizNext() {
+    if (quiz.round < quiz.total) nextQuestion();
+    else showResult();
+  }
+
+  function showResult() {
+    quiz.phase = "result";
+    quizBest.played = (quizBest.played || 0) + 1;
+    if (quiz.score > (quizBest.best || 0)) quizBest.best = quiz.score;
+    if (quiz.maxStreak > (quizBest.streak || 0)) quizBest.streak = quiz.maxStreak;
+    try { localStorage.setItem(QKEY, JSON.stringify(quizBest)); } catch { /**/ }
+    qEl("q-opts").hidden = true; qEl("q-feedback").hidden = true;
+    qEl("q-result").hidden = false;
+    qEl("q-result-score").textContent = quiz.score + " / " + quiz.total;
+    qEl("q-result-sub").textContent = t("q_result_sub")
+      .replace("{s}", quiz.score).replace("{t}", quiz.total)
+      .replace("{b}", quizBest.best).replace("{m}", quizBest.streak || 0);
+  }
+
+  function quizShare() {
+    const txt = t("q_share_text").replace("{s}", quiz.score).replace("{t}", quiz.total);
+    if (navigator.share) { navigator.share({ text: txt }).catch(() => { }); }
+    else if (navigator.clipboard) { navigator.clipboard.writeText(txt).then(() => announce(t("q_shared"))).catch(() => { }); }
+    else announce(txt);
+  }
 
   /* ---------------- UI wiring ---------------- */
   function setActive(list, active) {
@@ -473,6 +677,16 @@
     el("btn-help").addEventListener("click", openHelp);
     el("btn-how-footer").addEventListener("click", openHelp);
 
+    // expose slider refs for the sandbox<->quiz switch
+    inSpeedEl = inSpeed; inViscEl = inVisc; inAoaEl = inAoa;
+
+    // mode switch + quiz controls
+    el("mode-quiz").addEventListener("click", () => { if (!quiz.active) enterQuiz(); });
+    el("mode-sandbox").addEventListener("click", () => { if (quiz.active) enterSandbox(); });
+    qEl("q-next").addEventListener("click", onQuizNext);
+    qEl("q-again").addEventListener("click", startQuiz);
+    qEl("q-share").addEventListener("click", quizShare);
+
     // sync slider outputs with current params
     inSpeed.value = 65; applySpeed();
     inVisc.value = 35; applyVisc();
@@ -518,6 +732,7 @@
     const dtms = now - lastFrame; lastFrame = now;
     if (dtms > 0) fps = fps * 0.9 + (1000 / dtms) * 0.1;
     step();
+    if (quiz.active && quiz.phase === "revealing" && now - quiz.revealAt > 2600) showVerdict();
     updateReadouts(now, fps);
     requestAnimationFrame(frame);
   }
@@ -549,6 +764,10 @@
       readouts() {
         return { re: roRe.textContent, speed: roSpeed.textContent, drag: roDragWord.textContent, dragBar: roDragBar.style.width, lift: roLiftWord.textContent, liftBar: roLiftBar.style.width, regime: roRegime.textContent };
       },
+      quiz,
+      enterQuiz, enterSandbox,
+      qAnswer: onQuizAnswer, qReveal: showVerdict, qNext: onQuizNext,
+      qState() { return { phase: quiz.phase, round: quiz.round, score: quiz.score, streak: quiz.streak, answer: quiz.scenario && quiz.scenario.answer, type: quiz.scenario && quiz.scenario.type }; },
     };
 
     requestAnimationFrame(frame);

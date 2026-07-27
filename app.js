@@ -113,7 +113,8 @@
       ac_done_title: "Chapter {n} complete 🎓",
       ac_next_chapter: "Chapter {n} →",
       ac_ch1_sub: "You've met the Reynolds number, streamlining and lift. Next: pressure, area and downforce.",
-      ac_ch2_sub: "Pressure and the stagnation point, frontal area and downforce — done.",
+      ac_ch2_sub: "Pressure, frontal area and downforce — done. Next: efficiency and design.",
+      ac_ch3_sub: "Lift-to-drag efficiency, the cost of over-angling, and designing your own shape — done.",
       ac_final_title: "Academy complete 🎓",
       ac_final_sub: "You've worked through the fundamentals of flow, drag and lift. More chapters coming later.",
       ac_again: "Replay academy",
@@ -141,6 +142,18 @@
       l6_brief: "Flip the idea of lift: tilt the airfoil so the air pushes it DOWN — that's how a race car's wing sticks it to the track.",
       l6_goal: "Make lift point clearly downward",
       l6_lesson: "<strong>Lift direction just follows the tilt.</strong> Angle the airfoil the other way and it deflects air upward, so it's pushed down — downforce. An F1 wing is basically an airfoil mounted upside-down.",
+      l7_title: "Efficiency (L/D)",
+      l7_brief: "Every degree of angle buys lift but also drag. Tune the angle of attack to the sweet spot with the best lift-to-drag ratio (L/D).",
+      l7_goal: "Reach a high L/D (efficiency)",
+      l7_lesson: "<strong>L/D — lift divided by drag — is how efficiently a wing flies.</strong> Too little angle: barely any lift. Too much: drag climbs and L/D falls. Real wings cruise near their best-L/D angle.",
+      l8_title: "Too much angle",
+      l8_brief: "Push the angle of attack well past the sweet spot. Watch the drag climb — and the efficiency collapse.",
+      l8_goal: "Drive the drag very high (over-angle it)",
+      l8_lesson: "<strong>Past the best angle, drag rises fast and L/D drops.</strong> On a real wing the flow would separate and it would stall (lift collapses) — which is why aircraft limit their angle of attack. This simple model shows the drag penalty, not the sudden stall.",
+      l9_title: "Design your own shape",
+      l9_brief: "Now you're the designer: draw your own shape from scratch and make it slippery — long and smooth — to get the drag low.",
+      l9_goal: "Draw a low-drag shape of your own",
+      l9_lesson: "<strong>You did it — you streamlined a shape by hand.</strong> Long, smooth, tapered bodies guide the air with a narrow wake and low drag. That's the whole game of aerodynamic design.",
     },
     pl: {
       brand_tag: "narysuj i puść w ruch",
@@ -240,7 +253,8 @@
       ac_done_title: "Rozdział {n} ukończony 🎓",
       ac_next_chapter: "Rozdział {n} →",
       ac_ch1_sub: "Poznałeś liczbę Reynoldsa, opływowość i siłę nośną. Dalej: ciśnienie, pole czołowe i docisk.",
-      ac_ch2_sub: "Ciśnienie i punkt stagnacji, pole czołowe i docisk — zaliczone.",
+      ac_ch2_sub: "Ciśnienie, pole czołowe i docisk — zaliczone. Dalej: sprawność i projektowanie.",
+      ac_ch3_sub: "Sprawność L/D, kara za zbyt duży kąt i projekt własnego kształtu — zaliczone.",
       ac_final_title: "Akademia ukończona 🎓",
       ac_final_sub: "Przeszedłeś podstawy przepływu, oporu i siły nośnej. Kolejne rozdziały później.",
       ac_again: "Powtórz akademię",
@@ -268,6 +282,18 @@
       l6_brief: "Odwróć ideę nośnej: przechyl profil tak, by powietrze spychało go w DÓŁ — tak skrzydło bolidu dociska go do toru.",
       l6_goal: "Wytwórz wyraźną siłę w dół",
       l6_lesson: "<strong>Kierunek nośnej idzie za przechyleniem.</strong> Profil przechylony w drugą stronę odchyla powietrze w górę, więc jest spychany w dół — to docisk. Skrzydło F1 to w zasadzie profil zamontowany do góry nogami.",
+      l7_title: "Sprawność (L/D)",
+      l7_brief: "Każdy stopień kąta daje nośną, ale i opór. Dobierz kąt natarcia do sweet-spotu o najlepszym stosunku nośnej do oporu (L/D).",
+      l7_goal: "Osiągnij wysokie L/D (sprawność)",
+      l7_lesson: "<strong>L/D — nośna podzielona przez opór — mówi, jak sprawnie leci skrzydło.</strong> Za mały kąt: prawie brak nośnej. Za duży: opór rośnie i L/D spada. Prawdziwe skrzydła lecą blisko kąta najlepszego L/D.",
+      l8_title: "Za duży kąt",
+      l8_brief: "Przekrocz sweet-spot i przechyl profil dużo mocniej. Zobacz, jak opór rośnie — a sprawność się załamuje.",
+      l8_goal: "Wywołaj bardzo duży opór (przesadź z kątem)",
+      l8_lesson: "<strong>Za najlepszym kątem opór szybko rośnie, a L/D spada.</strong> Na prawdziwym skrzydle przepływ by się oderwał i skrzydło by przeciągnęło (nagły spadek nośnej) — dlatego samoloty ograniczają kąt natarcia. Ten prosty model pokazuje karę oporu, ale nie nagłe przeciągnięcie.",
+      l9_title: "Zaprojektuj własny kształt",
+      l9_brief: "Teraz Ty jesteś konstruktorem: narysuj własny kształt od zera i zrób go opływowym — długim i gładkim — żeby zbić opór.",
+      l9_goal: "Narysuj własny kształt o małym oporze",
+      l9_lesson: "<strong>Udało się — zaprojektowałeś opływowy kształt ręcznie.</strong> Długie, gładkie, zwężające się ciała prowadzą powietrze wąskim śladem i z małym oporem. To cała istota projektowania aerodynamicznego.",
     },
   };
 
@@ -771,6 +797,7 @@
   function relCd() { const L = sim.charLength(); const q = 0.5 * sim.u0 * sim.u0 * (L || 1); return (sim.hasShape && sim.warmup > 800 && q > 0) ? sim.Fx / q : NaN; }
   function relCl() { const L = sim.charLength(); const q = 0.5 * sim.u0 * sim.u0 * (L || 1); return (sim.hasShape && sim.warmup > 800 && q > 0) ? sim.Fy / q : 0; }
   function reNow() { const L = sim.charLength(); const Re = (L > 0 && sim.nu > 0) ? sim.u0 * L / sim.nu : 0; return Re; }
+  function relLD() { return (sim.hasShape && sim.warmup > 800 && sim.Fx > 0.001) ? sim.Fy / sim.Fx : 0; }
   const ACADEMY = [
     // ---- Chapter 1: the basics ----
     {
@@ -804,6 +831,22 @@
       setup: { shape: "airfoil", speed: 70, visc: 30, aoa: 0 },
       check() { const cl = relCl(); return { met: cl <= -4, now: (cl > 0.5 ? "▲" : cl < -0.5 ? "▼" : "≈") + " " + cl.toFixed(1) }; },
     },
+    // ---- Chapter 3: efficiency & design ----
+    {
+      ch: 3, title: "l7_title", brief: "l7_brief", goalText: "l7_goal", lesson: "l7_lesson",
+      setup: { shape: "airfoil", speed: 70, visc: 30, aoa: 0 },
+      check() { const ld = relLD(); return { met: ld >= 2.7, now: "L/D " + ld.toFixed(1) }; },
+    },
+    {
+      ch: 3, title: "l8_title", brief: "l8_brief", goalText: "l8_goal", lesson: "l8_lesson",
+      setup: { shape: "airfoil", speed: 70, visc: 30, aoa: 10 },
+      check() { const cd = relCd(); return { met: cd >= 4.7, now: dragWordFor(cd) }; },
+    },
+    {
+      ch: 3, title: "l9_title", brief: "l9_brief", goalText: "l9_goal", lesson: "l9_lesson",
+      setup: { draw: true, speed: 70, visc: 25 },
+      check() { const cd = relCd(); return { met: !currentPreset && sim.hasShape && sim.charLength() >= 10 && cd > 0 && cd <= 4.2, now: dragWordFor(cd) }; },
+    },
   ];
   function levelsInChapter(ch) { return ACADEMY.filter((l) => l.ch === ch).length; }
   function indexInChapter(i) { const ch = ACADEMY[i].ch; let k = 0; for (let j = 0; j <= i; j++) if (ACADEMY[j].ch === ch) k++; return k; }
@@ -815,7 +858,7 @@
   function setLevelParams(s) {
     if (inSpeedEl) { inSpeedEl.value = s.speed; inSpeedEl.dispatchEvent(new Event("input")); }
     if (inViscEl) { inViscEl.value = s.visc; inViscEl.dispatchEvent(new Event("input")); }
-    if (inAoaEl) { inAoaEl.value = s.aoa; inAoaEl.dispatchEvent(new Event("input")); }
+    if (inAoaEl) { inAoaEl.value = s.aoa || 0; inAoaEl.dispatchEvent(new Event("input")); }
   }
   function startAcademy() { startLevel(0); }
   function startLevel(i) {
@@ -823,10 +866,17 @@
     const lv = ACADEMY[i];
     currentPreset = null;              // avoid the AoA listener re-stamping mid-setup
     setLevelParams(lv.setup);
-    aoaDeg = lv.setup.aoa;
+    aoaDeg = lv.setup.aoa || 0;
     sim.resetFlow();
-    currentPreset = lv.setup.shape;
-    sim.stampPreset(lv.setup.shape, lv.setup.aoa);
+    if (lv.setup.draw) {
+      sim.clearShape();                // this level asks the player to draw their own shape
+      currentPreset = null;
+      showHint();
+    } else {
+      currentPreset = lv.setup.shape;
+      sim.stampPreset(lv.setup.shape, lv.setup.aoa);
+      hideHint();
+    }
     if (lv.setup.field) applyFieldMode(lv.setup.field);
     paused = false;
     qEl("ah-level").textContent = t("ac_level").replace("{c}", lv.ch).replace("{n}", indexInChapter(i)).replace("{t}", levelsInChapter(lv.ch));

@@ -3,7 +3,7 @@
 A tiny in-browser **wind tunnel**. Draw any 2D shape (or drop in a
 cylinder, airfoil, plate or teardrop) and watch real airflow bend around
 it in real time — streamlines, wake, flow separation and vortex shedding.
-Live readouts for the Reynolds number, estimated drag/lift coefficients
+Live readouts for the Reynolds number, relative drag/lift indicators
 and the flow regime.
 
 Pure static HTML/CSS/JS. No dependencies, no build step, no accounts, no
@@ -21,8 +21,11 @@ animation:
 - Solid cells use half-way **bounce-back** (no-slip walls).
 - The inlet, top and bottom are driven at the free-stream velocity; the
   outlet is a zero-gradient (open) boundary.
-- Forces on the shape use the **momentum-exchange** method, reported as
-  dimensionless coefficients.
+- Forces on the shape are estimated by integrating the **surface
+  pressure** ((rho − 1)/3) over the solid boundary, smoothed with an
+  exponential moving average, and shown as *relative* indicators — not
+  certified coefficients (a small 2D grid in a finite tunnel can't give
+  textbook C_d/C_l values).
 
 Everything is in lattice units; the number that actually governs the flow
 — the **Reynolds number** — is shown on screen.

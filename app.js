@@ -66,6 +66,8 @@
       aria_lang: "Language",
       aria_help: "How it works",
       aria_windtunnel: "Wind tunnel",
+      aria_mode: "Mode",
+      aria_quiz: "Guess the flow",
       aria_sim: "Wind tunnel simulation",
       aria_measures: "Live measurements",
       aria_controls: "Controls",
@@ -104,7 +106,7 @@
       q_drag: "Which shape has the LOWER drag?",
       q_info_drag: "On reveal, watch both wakes — a narrower wake means less drag.",
       ex_drag: "The more streamlined shape leaves a narrower wake and has lower drag.",
-      n_circle: "Cylinder", n_square: "Flat plate", n_ellipse: "Teardrop", n_airfoil: "Airfoil",
+      n_circle: "Cylinder", n_square: "Plate", n_ellipse: "Teardrop", n_airfoil: "Airfoil",
       mode_academy: "🎓 Academy",
       ac_level: "Chapter {c} · Level {n}/{t}",
       ac_now: "now",
@@ -209,6 +211,8 @@
       aria_lang: "Język",
       aria_help: "Jak to działa",
       aria_windtunnel: "Tunel aerodynamiczny",
+      aria_mode: "Tryb",
+      aria_quiz: "Zgadnij",
       aria_sim: "Symulacja tunelu aerodynamicznego",
       aria_measures: "Pomiary na żywo",
       aria_controls: "Sterowanie",
@@ -237,7 +241,7 @@
       q_round: "Runda {n} / {t}",
       q_scoreline: "{s} pkt · seria {k}",
       q_result_sub: "{s} / {t} trafień. Rekord {b}/{t} · najdłuższa seria {m}.",
-      q_share_text: "Wind Tunnel — Zgadnij fizykę: {s}/{t} 🎯 tunnel.gamestheory.org",
+      q_share_text: "Wind Tunnel — Zgadnij: {s}/{t} 🎯 tunnel.gamestheory.org",
       q_shared: "Wynik skopiowany do schowka.",
       ex_smooth: "Mała liczba Reynoldsa: lepkość utrzymuje przepływ przy powierzchni, wiry się nie odrywają.",
       ex_street: "Duża liczba Reynoldsa: przepływ się odrywa i tworzy naprzemienne wiry — ścieżka Kármána.",
@@ -320,7 +324,7 @@
         <li><strong>Flow regime</strong> — a plain-language read of what the wake is doing.</li>
       </ul>
       <h3>The physics (and its limits)</h3>
-      <p>Under the hood is a <strong>Lattice-Boltzmann</strong> solver (D2Q9, BGK). It approximates the <strong>incompressible Navier-Stokes equations</strong>, so the streamlines, wake and vortex street are computed, not faked. Solid cells use no-slip <em>bounce-back</em> walls.</p>
+      <p>Under the hood is a <strong>Lattice-Boltzmann</strong> solver (D2Q9, BGK). It approximates the <strong>incompressible Navier–Stokes equations</strong>, so the streamlines, wake and vortex street are computed, not faked. Solid cells use no-slip <em>bounce-back</em> walls.</p>
       <p class="muted">Honest limits: it's <strong>2D</strong> (no 3D effects like wingtip vortices), <strong>low-speed</strong> (incompressible — no sound or shock waves), has <strong>no turbulence model</strong> (very small eddies aren't resolved), and the forces are <strong>relative estimates</strong> (drag comes from surface pressure only — skin friction isn't included). Read it for intuition, not for certification.</p>
     `,
     pl: `
@@ -334,7 +338,7 @@
       </ul>
       <h3>Liczby</h3>
       <ul>
-        <li><strong>Liczba Reynoldsa</strong> — stosunek bezwładności do lepkiej „lepkości". Mała → gładki przepływ; duża → turbulentny ślad z odrywającymi się wirami. Ta sama liczba Reynoldsa = ten sam obraz przepływu, niezależnie od realnej wielkości i prędkości. Ta wartość jest dokładna dla modelu.</li>
+        <li><strong>Liczba Reynoldsa</strong> — stosunek bezwładności do lepkiej „kleistości”. Mała → gładki przepływ; duża → turbulentny ślad z odrywającymi się wirami. Ta sama liczba Reynoldsa = ten sam obraz przepływu, niezależnie od realnej wielkości i prędkości. Ta wartość jest dokładna dla modelu.</li>
         <li><strong>Opór</strong> i <strong>siła nośna</strong> są pokazane jako wskaźniki <em>względne</em>, nie jako certyfikowane współczynniki. Opływowa kropla ma dużo mniejszy opór niż płaska płyta; przechylony profil daje siłę nośną rosnącą z kątem. <em>Trendy</em> są fizycznie prawdziwe; wartości bezwzględne — nie. Mała siatka 2D w skończonym tunelu nie da podręcznikowych C<sub>d</sub>/C<sub>l</sub>, więc to narzędzie uczciwie tego nie udaje.</li>
         <li><strong>Reżim przepływu</strong> — opis słowny tego, co dzieje się w śladzie.</li>
       </ul>
@@ -784,7 +788,7 @@
     qEl("q-result").hidden = false;
     qEl("q-result-score").textContent = quiz.score + " / " + quiz.total;
     qEl("q-result-sub").textContent = t("q_result_sub")
-      .replace("{s}", quiz.score).replace("{t}", quiz.total)
+      .replace("{s}", quiz.score).replace(/\{t\}/g, quiz.total)
       .replace("{b}", quizBest.best).replace("{m}", quizBest.streak || 0);
   }
 

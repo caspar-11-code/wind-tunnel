@@ -7,7 +7,7 @@
 
   <!-- Security: strict CSP. No inline scripts/styles, no external origins. -->
   <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; img-src 'self' data: blob:; style-src 'self'; script-src 'self'; connect-src 'self'; font-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'" />
+        content="default-src 'self'; img-src 'self' data: blob:; style-src 'self'; script-src 'self'; connect-src 'self'; font-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'" />
   <meta name="referrer" content="no-referrer" />
 
   <title>Wind Tunnel — draw a shape, watch the air flow</title>
@@ -49,7 +49,7 @@
 
   <link rel="stylesheet" href="styles.css?v=6" />
   <script src="sim.js?v=10" defer></script>
-  <script src="app.js?v=12" defer></script>
+  <script src="app.js?v=13" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#canvas-wrap" data-i18n="skip_link">Skip to the tunnel</a>
@@ -80,7 +80,7 @@
   <main class="stage">
     <!-- The tunnel -->
     <section class="tunnel-panel" aria-label="Wind tunnel" data-i18n-aria="aria_windtunnel">
-      <div class="modebar" role="tablist" aria-label="Mode">
+      <div class="modebar" role="tablist" aria-label="Mode" data-i18n-aria="aria_mode">
         <button id="mode-sandbox" class="mode-btn is-active" type="button" role="tab" aria-selected="true" data-i18n="mode_sandbox">🌀 Sandbox</button>
         <button id="mode-quiz" class="mode-btn" type="button" role="tab" aria-selected="false" data-i18n="mode_quiz">🎯 Guess the flow</button>
         <button id="mode-academy" class="mode-btn" type="button" role="tab" aria-selected="false" data-i18n="mode_academy">🎓 Academy</button>
@@ -199,7 +199,7 @@
     </section>
 
     <!-- Quiz: guess the flow -->
-    <section class="quiz" id="quiz" hidden aria-label="Guess the flow">
+    <section class="quiz" id="quiz" hidden aria-label="Guess the flow" data-i18n-aria="aria_quiz">
       <div class="quiz__top">
         <span class="quiz__round" id="q-round">—</span>
         <span class="quiz__score" id="q-score">—</span>

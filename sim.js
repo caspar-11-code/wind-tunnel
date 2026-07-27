@@ -292,13 +292,19 @@
     // symmetry so the vortex street forms promptly when the regime allows.
     S.kick = function () {
       if (!S.bbox) return;
-      const cx = Math.min(nx - 3, S.bbox.maxx + 4);
+      const cx = Math.min(nx - 3, S.bbox.maxx + 3);
       const cy = Math.round((S.bbox.miny + S.bbox.maxy) / 2);
-      for (let y = Math.max(1, cy - 2); y <= Math.min(ny - 2, cy + 2); y++) {
-        for (let x = Math.max(1, cx - 2); x <= Math.min(nx - 2, cx + 2); x++) {
+      const R = 4;                                  // soft, circular, tapered — no sharp square edges
+      for (let y = cy - R; y <= cy + R; y++) {
+        if (y < 1 || y >= ny - 1) continue;
+        for (let x = cx - R; x <= cx + R; x++) {
+          if (x < 1 || x >= nx - 1) continue;
           const i = x + y * nx;
           if (barrier[i]) continue;
-          setEquil(i, ux[i] || S.u0, 0.18 * S.u0, rho[i] || 1);
+          const dx = x - cx, dy = y - cy, d2 = dx * dx + dy * dy;
+          if (d2 > R * R) continue;
+          const w = Math.exp(-d2 / (R * R * 0.45));  // Gaussian falloff
+          setEquil(i, ux[i] || S.u0, (uy[i] || 0) + 0.42 * S.u0 * w, rho[i] || 1);
         }
       }
     };

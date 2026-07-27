@@ -106,13 +106,17 @@
       ex_drag: "The more streamlined shape leaves a narrower wake and has lower drag.",
       n_circle: "Cylinder", n_square: "Flat plate", n_ellipse: "Teardrop", n_airfoil: "Airfoil",
       mode_academy: "🎓 Academy",
-      ac_level: "Chapter 1 · Level {n}/{t}",
+      ac_level: "Chapter {c} · Level {n}/{t}",
       ac_now: "now",
       ac_next: "Next level →",
       ac_finish: "Finish chapter →",
-      ac_done_title: "Chapter 1 complete 🎓",
-      ac_done_sub: "You've met the Reynolds number, streamlining and lift. More chapters coming soon.",
-      ac_again: "Replay chapter",
+      ac_done_title: "Chapter {n} complete 🎓",
+      ac_next_chapter: "Chapter {n} →",
+      ac_ch1_sub: "You've met the Reynolds number, streamlining and lift. Next: pressure, area and downforce.",
+      ac_ch2_sub: "Pressure and the stagnation point, frontal area and downforce — done.",
+      ac_final_title: "Academy complete 🎓",
+      ac_final_sub: "You've worked through the fundamentals of flow, drag and lift. More chapters coming later.",
+      ac_again: "Replay academy",
       l1_title: "The Reynolds number",
       l1_brief: "Same Reynolds number = same flow pattern. Raise the wind speed and lower the viscosity until a vortex street forms behind the cylinder.",
       l1_goal: "Trigger a vortex street: Reynolds ≥ 70",
@@ -125,6 +129,18 @@
       l3_brief: "An airfoil head-on doesn't lift. Increase the angle of attack until a clear upward lift appears.",
       l3_goal: "Make lift point clearly upward",
       l3_lesson: "<strong>An airfoil at an angle deflects air downward, so it gets pushed up</strong> — that's lift. Careful: a real wing stalls (lift suddenly collapses) past a critical angle — this simple model doesn't reproduce that.",
+      l4_title: "Pressure & the stagnation point",
+      l4_brief: "Switch the Show view to Pressure. Where the air stops at the nose, pressure is highest (the stagnation point); where it speeds up, pressure drops.",
+      l4_goal: "Switch the view to Pressure",
+      l4_lesson: "<strong>At the nose the air is brought to rest — the stagnation point, the highest pressure.</strong> Over the top and sides the air speeds up and the pressure falls. That pressure difference is exactly what pushes on a shape.",
+      l5_title: "Frontal area & drag",
+      l5_brief: "Drag grows with the area a body shows to the wind. Make the drag as HIGH as you can — what catches the most air?",
+      l5_goal: "Make the drag very high",
+      l5_lesson: "<strong>A tall, blunt shape facing the flow catches the most air and drags the most.</strong> The same shape turned edge-on drags far less — frontal area matters as much as form.",
+      l6_title: "Downforce (an upside-down wing)",
+      l6_brief: "Flip the idea of lift: tilt the airfoil so the air pushes it DOWN — that's how a race car's wing sticks it to the track.",
+      l6_goal: "Make lift point clearly downward",
+      l6_lesson: "<strong>Lift direction just follows the tilt.</strong> Angle the airfoil the other way and it deflects air upward, so it's pushed down — downforce. An F1 wing is basically an airfoil mounted upside-down.",
     },
     pl: {
       brand_tag: "narysuj i puść w ruch",
@@ -217,13 +233,17 @@
       ex_drag: "Bardziej opływowy kształt zostawia węższy ślad i ma mniejszy opór.",
       n_circle: "Walec", n_square: "Płyta", n_ellipse: "Kropla", n_airfoil: "Profil",
       mode_academy: "🎓 Akademia",
-      ac_level: "Rozdział 1 · Poziom {n}/{t}",
+      ac_level: "Rozdział {c} · Poziom {n}/{t}",
       ac_now: "teraz",
       ac_next: "Następny poziom →",
       ac_finish: "Zakończ rozdział →",
-      ac_done_title: "Rozdział 1 ukończony 🎓",
-      ac_done_sub: "Poznałeś liczbę Reynoldsa, opływowość i siłę nośną. Kolejne rozdziały wkrótce.",
-      ac_again: "Powtórz rozdział",
+      ac_done_title: "Rozdział {n} ukończony 🎓",
+      ac_next_chapter: "Rozdział {n} →",
+      ac_ch1_sub: "Poznałeś liczbę Reynoldsa, opływowość i siłę nośną. Dalej: ciśnienie, pole czołowe i docisk.",
+      ac_ch2_sub: "Ciśnienie i punkt stagnacji, pole czołowe i docisk — zaliczone.",
+      ac_final_title: "Akademia ukończona 🎓",
+      ac_final_sub: "Przeszedłeś podstawy przepływu, oporu i siły nośnej. Kolejne rozdziały później.",
+      ac_again: "Powtórz akademię",
       l1_title: "Liczba Reynoldsa",
       l1_brief: "Ta sama liczba Reynoldsa = ten sam obraz przepływu. Podnoś prędkość wiatru i zmniejszaj lepkość, aż za walcem powstanie ścieżka wirów.",
       l1_goal: "Wywołaj ścieżkę wirów: Reynolds ≥ 70",
@@ -236,6 +256,18 @@
       l3_brief: "Profil na wprost nie unosi. Zwiększaj kąt natarcia, aż pojawi się wyraźna siła nośna w górę.",
       l3_goal: "Wytwórz wyraźną siłę nośną w górę",
       l3_lesson: "<strong>Profil pod kątem odchyla powietrze w dół, więc jest pchany w górę</strong> — to siła nośna. Uwaga: prawdziwe skrzydło przy zbyt dużym kącie przeciąga (nagły spadek nośnej) — tego ten prosty model nie liczy.",
+      l4_title: "Ciśnienie i punkt stagnacji",
+      l4_brief: "Przełącz widok pola na Ciśnienie (sekcja Pokaż po prawej). Tam gdzie powietrze zatrzymuje się z przodu, ciśnienie jest najwyższe (punkt stagnacji); tam gdzie przyspiesza — spada.",
+      l4_goal: "Przełącz widok na Ciśnienie",
+      l4_lesson: "<strong>Z przodu powietrze jest wyhamowane — punkt stagnacji, najwyższe ciśnienie.</strong> Nad kształtem i po bokach powietrze przyspiesza, a ciśnienie spada. Ta różnica ciśnień właśnie napiera na kształt.",
+      l5_title: "Pole czołowe a opór",
+      l5_brief: "Opór rośnie z powierzchnią, jaką ciało pokazuje wiatrowi. Ustaw opór jak NAJWIĘKSZY — co łapie najwięcej powietrza?",
+      l5_goal: "Ustaw bardzo duży opór",
+      l5_lesson: "<strong>Wysoki, tępy kształt na wprost łapie najwięcej powietrza i stawia największy opór.</strong> Ten sam kształt obrócony bokiem stawia dużo mniejszy — pole czołowe liczy się tak samo jak forma.",
+      l6_title: "Docisk (odwrócone skrzydło)",
+      l6_brief: "Odwróć ideę nośnej: przechyl profil tak, by powietrze spychało go w DÓŁ — tak skrzydło bolidu dociska go do toru.",
+      l6_goal: "Wytwórz wyraźną siłę w dół",
+      l6_lesson: "<strong>Kierunek nośnej idzie za przechyleniem.</strong> Profil przechylony w drugą stronę odchyla powietrze w górę, więc jest spychany w dół — to docisk. Skrzydło F1 to w zasadzie profil zamontowany do góry nogami.",
     },
   };
 
@@ -529,6 +561,13 @@
 
   function hideHint() { if (hintDraw) hintDraw.classList.add("is-hidden"); }
   function showHint() { if (hintDraw) hintDraw.classList.remove("is-hidden"); }
+  function applyFieldMode(m) {
+    fieldMode = m;
+    document.querySelectorAll(".field-btn").forEach((b) => {
+      const on = b.dataset.field === m;
+      b.classList.toggle("is-active", on); b.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+  }
   function announce(msg) { if (ariaLive) { ariaLive.textContent = ""; setTimeout(() => (ariaLive.textContent = msg), 30); } }
 
   /* ---------------- quiz: guess the flow ---------------- */
@@ -626,8 +665,9 @@
       sim.stampPreset(sc.shape, sc.aoa);
       fieldMode = sc.type === "wake" ? "curl" : "speed"; // vorticity makes the street pop
     }
+    sim.resetFlow();     // wipe the kick so the frozen question shows clean, uniform flow
     currentPreset = null;
-    paused = true; // frozen until the player answers
+    paused = true;       // frozen until the player answers
   }
 
   function nextQuestion() {
@@ -674,6 +714,8 @@
       b.disabled = true;
       if (b.dataset.val === val) b.classList.add("is-picked");
     });
+    sim.kick();     // break symmetry now, at reveal — no artifact left in the frozen question
+    quiz.revealMs = quiz.scenario.type === "wake" ? 4200 : 2600; // give the vortex street time to grow
     paused = false; // release the flow so it develops and confirms
   }
 
@@ -726,23 +768,45 @@
     if (!(cd > 0) || cd > 90) return "—";
     return cd < 2 ? t("drag_low") : cd < 4 ? t("drag_mod") : cd < 6.5 ? t("drag_high") : t("drag_vhigh");
   }
+  function relCd() { const L = sim.charLength(); const q = 0.5 * sim.u0 * sim.u0 * (L || 1); return (sim.hasShape && sim.warmup > 800 && q > 0) ? sim.Fx / q : NaN; }
+  function relCl() { const L = sim.charLength(); const q = 0.5 * sim.u0 * sim.u0 * (L || 1); return (sim.hasShape && sim.warmup > 800 && q > 0) ? sim.Fy / q : 0; }
+  function reNow() { const L = sim.charLength(); const Re = (L > 0 && sim.nu > 0) ? sim.u0 * L / sim.nu : 0; return Re; }
   const ACADEMY = [
+    // ---- Chapter 1: the basics ----
     {
-      title: "l1_title", brief: "l1_brief", goalText: "l1_goal", lesson: "l1_lesson",
+      ch: 1, title: "l1_title", brief: "l1_brief", goalText: "l1_goal", lesson: "l1_lesson",
       setup: { shape: "circle", speed: 45, visc: 70, aoa: 0 },
-      check() { const L = sim.charLength(); const Re = (L > 0 && sim.nu > 0) ? sim.u0 * L / sim.nu : 0; return { met: Re >= 70, now: "Re ≈ " + Math.round(Re) }; },
+      check() { const Re = reNow(); return { met: Re >= 70, now: "Re ≈ " + Math.round(Re) }; },
     },
     {
-      title: "l2_title", brief: "l2_brief", goalText: "l2_goal", lesson: "l2_lesson",
+      ch: 1, title: "l2_title", brief: "l2_brief", goalText: "l2_goal", lesson: "l2_lesson",
       setup: { shape: "square", speed: 70, visc: 25, aoa: 0 },
-      check() { const L = sim.charLength(); const q = 0.5 * sim.u0 * sim.u0 * (L || 1); const cd = (sim.hasShape && sim.warmup > 800 && q > 0) ? sim.Fx / q : 99; return { met: cd > 0 && cd <= 4.5, now: dragWordFor(cd) }; },
+      check() { const cd = relCd(); return { met: cd > 0 && cd <= 4.5, now: dragWordFor(cd) }; },
     },
     {
-      title: "l3_title", brief: "l3_brief", goalText: "l3_goal", lesson: "l3_lesson",
+      ch: 1, title: "l3_title", brief: "l3_brief", goalText: "l3_goal", lesson: "l3_lesson",
       setup: { shape: "airfoil", speed: 70, visc: 30, aoa: 0 },
-      check() { const L = sim.charLength(); const q = 0.5 * sim.u0 * sim.u0 * (L || 1); const cl = (sim.hasShape && sim.warmup > 800 && q > 0) ? sim.Fy / q : 0; return { met: cl >= 4, now: (cl > 0.5 ? "▲" : cl < -0.5 ? "▼" : "≈") + " " + cl.toFixed(1) }; },
+      check() { const cl = relCl(); return { met: cl >= 4, now: (cl > 0.5 ? "▲" : cl < -0.5 ? "▼" : "≈") + " " + cl.toFixed(1) }; },
+    },
+    // ---- Chapter 2: pressure, area, downforce ----
+    {
+      ch: 2, title: "l4_title", brief: "l4_brief", goalText: "l4_goal", lesson: "l4_lesson",
+      setup: { shape: "circle", speed: 62, visc: 45, aoa: 0, field: "speed" },
+      check() { return { met: fieldMode === "pressure", now: "" }; },
+    },
+    {
+      ch: 2, title: "l5_title", brief: "l5_brief", goalText: "l5_goal", lesson: "l5_lesson",
+      setup: { shape: "airfoil", speed: 70, visc: 25, aoa: 0 },
+      check() { const cd = relCd(); return { met: cd >= 6, now: dragWordFor(cd) }; },
+    },
+    {
+      ch: 2, title: "l6_title", brief: "l6_brief", goalText: "l6_goal", lesson: "l6_lesson",
+      setup: { shape: "airfoil", speed: 70, visc: 30, aoa: 0 },
+      check() { const cl = relCl(); return { met: cl <= -4, now: (cl > 0.5 ? "▲" : cl < -0.5 ? "▼" : "≈") + " " + cl.toFixed(1) }; },
     },
   ];
+  function levelsInChapter(ch) { return ACADEMY.filter((l) => l.ch === ch).length; }
+  function indexInChapter(i) { const ch = ACADEMY[i].ch; let k = 0; for (let j = 0; j <= i; j++) if (ACADEMY[j].ch === ch) k++; return k; }
   const AKEY = "gt.tunnel.academy";
   const academy = { active: false, level: 0, passed: false, holdMs: 0 };
   let academyProgress = 0;
@@ -763,8 +827,9 @@
     sim.resetFlow();
     currentPreset = lv.setup.shape;
     sim.stampPreset(lv.setup.shape, lv.setup.aoa);
+    if (lv.setup.field) applyFieldMode(lv.setup.field);
     paused = false;
-    qEl("ah-level").textContent = t("ac_level").replace("{n}", i + 1).replace("{t}", ACADEMY.length);
+    qEl("ah-level").textContent = t("ac_level").replace("{c}", lv.ch).replace("{n}", indexInChapter(i)).replace("{t}", levelsInChapter(lv.ch));
     qEl("ah-title").textContent = t(lv.title);
     qEl("ah-brief").textContent = t(lv.brief);
     qEl("ah-goal").hidden = false; qEl("ah-goal").classList.remove("met");
@@ -776,7 +841,7 @@
     if (!academy.active || academy.passed) return;
     const lv = ACADEMY[academy.level];
     const r = lv.check();
-    qEl("ah-goal-text").textContent = t(lv.goalText) + " — " + t("ac_now") + " " + r.now;
+    qEl("ah-goal-text").textContent = t(lv.goalText) + (r.now ? " — " + t("ac_now") + " " + r.now : "");
     const g = qEl("ah-goal");
     if (r.met) {
       g.classList.add("met"); qEl("ah-goal-icon").textContent = "✓";
@@ -797,18 +862,24 @@
     qEl("ah-next").textContent = (academy.level >= ACADEMY.length - 1) ? t("ac_finish") : t("ac_next");
     qEl("ah-done").hidden = false;
   }
+  let pendingCertAction = null;
   function onAcademyNext() {
-    if (academy.level >= ACADEMY.length - 1) showCert();
-    else startLevel(academy.level + 1);
+    const cur = academy.level, next = cur + 1;
+    if (next >= ACADEMY.length) { showCert(ACADEMY[cur].ch, -1); return; }        // final
+    if (ACADEMY[next].ch !== ACADEMY[cur].ch) { showCert(ACADEMY[cur].ch, next); return; } // chapter break
+    startLevel(next);
   }
-  function showCert() {
+  function showCert(ch, next) {
     academy.passed = true; paused = true;
     qEl("ah-goal").hidden = true; qEl("ah-done").hidden = true;
-    qEl("ah-cert-title").textContent = t("ac_done_title");
-    qEl("ah-cert-sub").textContent = t("ac_done_sub");
+    const final = next < 0;
+    qEl("ah-cert-title").textContent = final ? t("ac_final_title") : t("ac_done_title").replace("{n}", ch);
+    qEl("ah-cert-sub").textContent = final ? t("ac_final_sub") : t("ac_ch" + ch + "_sub");
+    qEl("ah-again").textContent = final ? t("ac_again") : t("ac_next_chapter").replace("{n}", ch + 1);
+    pendingCertAction = () => { qEl("ah-cert").hidden = true; qEl("ah-goal").hidden = false; startLevel(final ? 0 : next); };
     qEl("ah-cert").hidden = false;
   }
-  function academyAgain() { qEl("ah-cert").hidden = true; startLevel(0); }
+  function academyAgain() { if (pendingCertAction) { const f = pendingCertAction; pendingCertAction = null; f(); } else startLevel(0); }
 
   /* ---------------- UI wiring ---------------- */
   function setActive(list, active) {
@@ -838,8 +909,7 @@
     inAoa.addEventListener("input", () => { aoaDeg = +inAoa.value; outAoa.textContent = aoaDeg + "°"; if (currentPreset) sim.stampPreset(currentPreset, aoaDeg); });
     aoaDeg = +inAoa.value; outAoa.textContent = aoaDeg + "°";
 
-    const fieldBtns = Array.from(document.querySelectorAll(".field-btn"));
-    fieldBtns.forEach((b) => b.addEventListener("click", () => { fieldMode = b.dataset.field; setActive(fieldBtns, b); }));
+    document.querySelectorAll(".field-btn").forEach((b) => b.addEventListener("click", () => applyFieldMode(b.dataset.field)));
 
     el("in-smoke").addEventListener("change", (e) => { smokeOn = e.target.checked; });
 
@@ -921,7 +991,7 @@
     const dtms = now - lastFrame; lastFrame = now;
     if (dtms > 0) fps = fps * 0.9 + (1000 / dtms) * 0.1;
     step();
-    if (quiz.active && quiz.phase === "revealing" && now - quiz.revealAt > 2600) showVerdict();
+    if (quiz.active && quiz.phase === "revealing" && now - quiz.revealAt > (quiz.revealMs || 2600)) showVerdict();
     if (academy.active) academyUpdate(dtms);
     updateReadouts(now, fps);
     requestAnimationFrame(frame);

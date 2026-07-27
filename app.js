@@ -154,6 +154,9 @@
       l9_brief: "Now you're the designer: draw your own shape from scratch and make it slippery — long and smooth — to get the drag low.",
       l9_goal: "Draw a low-drag shape of your own",
       l9_lesson: "<strong>You did it — you streamlined a shape by hand.</strong> Long, smooth, tapered bodies guide the air with a narrow wake and low drag. That's the whole game of aerodynamic design.",
+      l9_now_preset: "your own drawing only — a preset doesn't count",
+      l9_now_draw: "draw a shape in the tunnel",
+      l9_now_small: "too small — draw it bigger",
     },
     pl: {
       brand_tag: "narysuj i puść w ruch",
@@ -294,6 +297,9 @@
       l9_brief: "Teraz Ty jesteś konstruktorem: narysuj własny kształt od zera i zrób go opływowym — długim i gładkim — żeby zbić opór.",
       l9_goal: "Narysuj własny kształt o małym oporze",
       l9_lesson: "<strong>Udało się — zaprojektowałeś opływowy kształt ręcznie.</strong> Długie, gładkie, zwężające się ciała prowadzą powietrze wąskim śladem i z małym oporem. To cała istota projektowania aerodynamicznego.",
+      l9_now_preset: "tylko własny rysunek — preset się nie liczy",
+      l9_now_draw: "narysuj kształt w tunelu",
+      l9_now_small: "za mały — narysuj większy",
     },
   };
 
@@ -845,7 +851,13 @@
     {
       ch: 3, title: "l9_title", brief: "l9_brief", goalText: "l9_goal", lesson: "l9_lesson",
       setup: { draw: true, speed: 70, visc: 25 },
-      check() { const cd = relCd(); return { met: !currentPreset && sim.hasShape && sim.charLength() >= 10 && cd > 0 && cd <= 4.2, now: dragWordFor(cd) }; },
+      check() {
+        if (currentPreset) return { met: false, now: t("l9_now_preset") };  // a preset doesn't count
+        if (!sim.hasShape) return { met: false, now: t("l9_now_draw") };
+        if (sim.charLength() < 10) return { met: false, now: t("l9_now_small") };
+        const cd = relCd();
+        return { met: cd > 0 && cd <= 4.2, now: dragWordFor(cd) };
+      },
     },
   ];
   function levelsInChapter(ch) { return ACADEMY.filter((l) => l.ch === ch).length; }
@@ -860,7 +872,11 @@
     if (inViscEl) { inViscEl.value = s.visc; inViscEl.dispatchEvent(new Event("input")); }
     if (inAoaEl) { inAoaEl.value = s.aoa || 0; inAoaEl.dispatchEvent(new Event("input")); }
   }
-  function startAcademy() { startLevel(0); }
+  function startAcademy() {
+    // resume where the player left off; if they already finished, replay from the start
+    const i = (academyProgress >= ACADEMY.length) ? 0 : academyProgress;
+    startLevel(i);
+  }
   function startLevel(i) {
     academy.level = i; academy.passed = false; academy.holdMs = 0;
     const lv = ACADEMY[i];
@@ -1042,7 +1058,9 @@
     if (dtms > 0) fps = fps * 0.9 + (1000 / dtms) * 0.1;
     step();
     if (quiz.active && quiz.phase === "revealing" && now - quiz.revealAt > (quiz.revealMs || 2600)) showVerdict();
-    if (academy.active) academyUpdate(dtms);
+    // only progress the goal while the flow is actually running; clamp dt so a
+    // throttled/backgrounded frame can't jump the hold timer (or a pause auto-pass)
+    if (academy.active && !paused) academyUpdate(Math.min(dtms, 50));
     updateReadouts(now, fps);
     requestAnimationFrame(frame);
   }

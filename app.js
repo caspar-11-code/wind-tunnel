@@ -105,6 +105,26 @@
       q_info_drag: "On reveal, watch both wakes — a narrower wake means less drag.",
       ex_drag: "The more streamlined shape leaves a narrower wake and has lower drag.",
       n_circle: "Cylinder", n_square: "Flat plate", n_ellipse: "Teardrop", n_airfoil: "Airfoil",
+      mode_academy: "🎓 Academy",
+      ac_level: "Chapter 1 · Level {n}/{t}",
+      ac_now: "now",
+      ac_next: "Next level →",
+      ac_finish: "Finish chapter →",
+      ac_done_title: "Chapter 1 complete 🎓",
+      ac_done_sub: "You've met the Reynolds number, streamlining and lift. More chapters coming soon.",
+      ac_again: "Replay chapter",
+      l1_title: "The Reynolds number",
+      l1_brief: "Same Reynolds number = same flow pattern. Raise the wind speed and lower the viscosity until a vortex street forms behind the cylinder.",
+      l1_goal: "Trigger a vortex street: Reynolds ≥ 70",
+      l1_lesson: "<strong>Reynolds = inertia ÷ viscosity.</strong> Below ~55 the flow stays smooth; above it the wake sheds alternating vortices — a Kármán street. The same Reynolds number means the same pattern, at any real size or speed.",
+      l2_title: "Streamlining",
+      l2_brief: "A flat plate has huge drag. Change the shape — pick a preset or draw your own — to narrow the wake and bring the drag down.",
+      l2_goal: "Bring the drag down (a streamlined shape)",
+      l2_lesson: "<strong>A blunt body drags mostly through pressure</strong> — it leaves a wide, low-pressure wake. A streamlined shape guides the air gently and narrows the wake, so the drag drops sharply.",
+      l3_title: "Angle of attack & lift",
+      l3_brief: "An airfoil head-on doesn't lift. Increase the angle of attack until a clear upward lift appears.",
+      l3_goal: "Make lift point clearly upward",
+      l3_lesson: "<strong>An airfoil at an angle deflects air downward, so it gets pushed up</strong> — that's lift. Careful: a real wing stalls (lift suddenly collapses) past a critical angle — this simple model doesn't reproduce that.",
     },
     pl: {
       brand_tag: "narysuj i puść w ruch",
@@ -196,6 +216,26 @@
       q_info_drag: "Po odsłonie patrz na oba ślady — węższy ślad to mniejszy opór.",
       ex_drag: "Bardziej opływowy kształt zostawia węższy ślad i ma mniejszy opór.",
       n_circle: "Walec", n_square: "Płyta", n_ellipse: "Kropla", n_airfoil: "Profil",
+      mode_academy: "🎓 Akademia",
+      ac_level: "Rozdział 1 · Poziom {n}/{t}",
+      ac_now: "teraz",
+      ac_next: "Następny poziom →",
+      ac_finish: "Zakończ rozdział →",
+      ac_done_title: "Rozdział 1 ukończony 🎓",
+      ac_done_sub: "Poznałeś liczbę Reynoldsa, opływowość i siłę nośną. Kolejne rozdziały wkrótce.",
+      ac_again: "Powtórz rozdział",
+      l1_title: "Liczba Reynoldsa",
+      l1_brief: "Ta sama liczba Reynoldsa = ten sam obraz przepływu. Podnoś prędkość wiatru i zmniejszaj lepkość, aż za walcem powstanie ścieżka wirów.",
+      l1_goal: "Wywołaj ścieżkę wirów: Reynolds ≥ 70",
+      l1_lesson: "<strong>Reynolds = bezwładność ÷ lepkość.</strong> Poniżej ~55 przepływ jest gładki; powyżej — w śladzie odrywają się naprzemienne wiry (ścieżka Kármána). Ta sama liczba Reynoldsa to ten sam obraz, przy dowolnej realnej wielkości i prędkości.",
+      l2_title: "Opływowość",
+      l2_brief: "Płaska płyta stawia ogromny opór. Zmień kształt — wybierz gotowy albo narysuj własny — żeby zwęzić ślad i zbić opór.",
+      l2_goal: "Zbij opór (opływowy kształt)",
+      l2_lesson: "<strong>Ciało tępe stawia opór głównie ciśnieniem</strong> — zostawia szeroki ślad o niskim ciśnieniu. Opływowy kształt prowadzi powietrze łagodnie i zwęża ślad, więc opór gwałtownie spada.",
+      l3_title: "Kąt natarcia i siła nośna",
+      l3_brief: "Profil na wprost nie unosi. Zwiększaj kąt natarcia, aż pojawi się wyraźna siła nośna w górę.",
+      l3_goal: "Wytwórz wyraźną siłę nośną w górę",
+      l3_lesson: "<strong>Profil pod kątem odchyla powietrze w dół, więc jest pchany w górę</strong> — to siła nośna. Uwaga: prawdziwe skrzydło przy zbyt dużym kącie przeciąga (nagły spadek nośnej) — tego ten prosty model nie liczy.",
     },
   };
 
@@ -270,8 +310,8 @@
   }
 
   /* ---------------- state ---------------- */
-  let sim = null;           // active solver (points at sandboxSim or quizSim)
-  let sandboxSim = null, quizSim = null;
+  let sim = null;           // active solver (points at sandboxSim / quizSim / academySim)
+  let sandboxSim = null, quizSim = null, academySim = null;
   let fieldMode = "speed";
   let smokeOn = true;
   let tool = "draw";
@@ -525,32 +565,44 @@
   function qEl(id) { return document.getElementById(id); }
   function qShuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const tmp = a[i]; a[i] = a[j]; a[j] = tmp; } return a; }
 
-  function enterQuiz() {
-    quiz.active = true;
-    el("mode-quiz").classList.add("is-active"); el("mode-quiz").setAttribute("aria-selected", "true");
-    el("mode-sandbox").classList.remove("is-active"); el("mode-sandbox").setAttribute("aria-selected", "false");
-    document.querySelector(".controls").hidden = true;
-    qEl("quiz").hidden = false;
-    document.querySelector(".readouts").style.display = "none";
-    regimeBadge.style.display = "none";
-    hideHint();
-    sim = quizSim;          // quiz drives its own solver; sandbox stays frozen & intact
-    initParticles();
-    startQuiz();
+  function setModeUI(mode) {
+    [["mode-sandbox", "sandbox"], ["mode-quiz", "quiz"], ["mode-academy", "academy"]].forEach(([id, m]) => {
+      const b = el(id); const on = (m === mode);
+      b.classList.toggle("is-active", on); b.setAttribute("aria-selected", on ? "true" : "false");
+    });
+    document.querySelector(".controls").hidden = (mode === "quiz");   // controls used in sandbox + academy
+    qEl("quiz").hidden = (mode !== "quiz");
+    qEl("academy-hud").hidden = (mode !== "academy");
+    const showReadouts = (mode !== "quiz");                          // quiz hides them (would leak the answer)
+    document.querySelector(".readouts").style.display = showReadouts ? "" : "none";
+    regimeBadge.style.display = showReadouts ? "" : "none";
   }
-  function enterSandbox() {
-    quiz.active = false;
-    el("mode-sandbox").classList.add("is-active"); el("mode-sandbox").setAttribute("aria-selected", "true");
-    el("mode-quiz").classList.remove("is-active"); el("mode-quiz").setAttribute("aria-selected", "false");
-    qEl("quiz").hidden = true;
-    document.querySelector(".controls").hidden = false;
-    document.querySelector(".readouts").style.display = "";
-    regimeBadge.style.display = "";
-    sim = sandboxSim;       // resume the sandbox exactly where the user left it
-    initParticles();
+  function restoreFieldFromButtons() {
     const af = document.querySelector(".field-btn.is-active");
     fieldMode = af ? af.dataset.field : "speed";
+  }
+  function enterSandbox() {
+    quiz.active = false; academy.active = false;
+    setModeUI("sandbox");
+    hideHint();
+    sim = sandboxSim; initParticles();  // resume the sandbox exactly where the user left it
+    restoreFieldFromButtons();
     paused = false;
+  }
+  function enterQuiz() {
+    quiz.active = true; academy.active = false;
+    setModeUI("quiz");
+    hideHint();
+    sim = quizSim; initParticles();     // quiz drives its own solver; sandbox stays intact
+    startQuiz();
+  }
+  function enterAcademy() {
+    quiz.active = false; academy.active = true;
+    setModeUI("academy");
+    hideHint();
+    sim = academySim; initParticles();
+    restoreFieldFromButtons();
+    startAcademy();
   }
 
   function startQuiz() {
@@ -669,6 +721,95 @@
     else announce(txt);
   }
 
+  /* ---------------- academy: guided campaign (Chapter 1) ---------------- */
+  function dragWordFor(cd) {
+    if (!(cd > 0) || cd > 90) return "—";
+    return cd < 2 ? t("drag_low") : cd < 4 ? t("drag_mod") : cd < 6.5 ? t("drag_high") : t("drag_vhigh");
+  }
+  const ACADEMY = [
+    {
+      title: "l1_title", brief: "l1_brief", goalText: "l1_goal", lesson: "l1_lesson",
+      setup: { shape: "circle", speed: 45, visc: 70, aoa: 0 },
+      check() { const L = sim.charLength(); const Re = (L > 0 && sim.nu > 0) ? sim.u0 * L / sim.nu : 0; return { met: Re >= 70, now: "Re ≈ " + Math.round(Re) }; },
+    },
+    {
+      title: "l2_title", brief: "l2_brief", goalText: "l2_goal", lesson: "l2_lesson",
+      setup: { shape: "square", speed: 70, visc: 25, aoa: 0 },
+      check() { const L = sim.charLength(); const q = 0.5 * sim.u0 * sim.u0 * (L || 1); const cd = (sim.hasShape && sim.warmup > 800 && q > 0) ? sim.Fx / q : 99; return { met: cd > 0 && cd <= 4.5, now: dragWordFor(cd) }; },
+    },
+    {
+      title: "l3_title", brief: "l3_brief", goalText: "l3_goal", lesson: "l3_lesson",
+      setup: { shape: "airfoil", speed: 70, visc: 30, aoa: 0 },
+      check() { const L = sim.charLength(); const q = 0.5 * sim.u0 * sim.u0 * (L || 1); const cl = (sim.hasShape && sim.warmup > 800 && q > 0) ? sim.Fy / q : 0; return { met: cl >= 4, now: (cl > 0.5 ? "▲" : cl < -0.5 ? "▼" : "≈") + " " + cl.toFixed(1) }; },
+    },
+  ];
+  const AKEY = "gt.tunnel.academy";
+  const academy = { active: false, level: 0, passed: false, holdMs: 0 };
+  let academyProgress = 0;
+  try { const s = JSON.parse(localStorage.getItem(AKEY) || "{}"); if (s && typeof s.progress === "number") academyProgress = s.progress; } catch { /**/ }
+
+  function setLevelParams(s) {
+    if (inSpeedEl) { inSpeedEl.value = s.speed; inSpeedEl.dispatchEvent(new Event("input")); }
+    if (inViscEl) { inViscEl.value = s.visc; inViscEl.dispatchEvent(new Event("input")); }
+    if (inAoaEl) { inAoaEl.value = s.aoa; inAoaEl.dispatchEvent(new Event("input")); }
+  }
+  function startAcademy() { startLevel(0); }
+  function startLevel(i) {
+    academy.level = i; academy.passed = false; academy.holdMs = 0;
+    const lv = ACADEMY[i];
+    currentPreset = null;              // avoid the AoA listener re-stamping mid-setup
+    setLevelParams(lv.setup);
+    aoaDeg = lv.setup.aoa;
+    sim.resetFlow();
+    currentPreset = lv.setup.shape;
+    sim.stampPreset(lv.setup.shape, lv.setup.aoa);
+    paused = false;
+    qEl("ah-level").textContent = t("ac_level").replace("{n}", i + 1).replace("{t}", ACADEMY.length);
+    qEl("ah-title").textContent = t(lv.title);
+    qEl("ah-brief").textContent = t(lv.brief);
+    qEl("ah-goal").hidden = false; qEl("ah-goal").classList.remove("met");
+    qEl("ah-goal-icon").textContent = "◌";
+    qEl("ah-goal-text").textContent = t(lv.goalText);
+    qEl("ah-done").hidden = true; qEl("ah-cert").hidden = true;
+  }
+  function academyUpdate(dt) {
+    if (!academy.active || academy.passed) return;
+    const lv = ACADEMY[academy.level];
+    const r = lv.check();
+    qEl("ah-goal-text").textContent = t(lv.goalText) + " — " + t("ac_now") + " " + r.now;
+    const g = qEl("ah-goal");
+    if (r.met) {
+      g.classList.add("met"); qEl("ah-goal-icon").textContent = "✓";
+      academy.holdMs += dt;
+      if (academy.holdMs >= 1100) passLevel();
+    } else {
+      g.classList.remove("met"); qEl("ah-goal-icon").textContent = "◌";
+      academy.holdMs = 0;
+    }
+  }
+  function passLevel() {
+    academy.passed = true;
+    const lv = ACADEMY[academy.level];
+    academyProgress = Math.max(academyProgress, academy.level + 1);
+    try { localStorage.setItem(AKEY, JSON.stringify({ progress: academyProgress })); } catch { /**/ }
+    qEl("ah-goal").classList.add("met"); qEl("ah-goal-icon").textContent = "✓";
+    qEl("ah-lesson").innerHTML = t(lv.lesson);
+    qEl("ah-next").textContent = (academy.level >= ACADEMY.length - 1) ? t("ac_finish") : t("ac_next");
+    qEl("ah-done").hidden = false;
+  }
+  function onAcademyNext() {
+    if (academy.level >= ACADEMY.length - 1) showCert();
+    else startLevel(academy.level + 1);
+  }
+  function showCert() {
+    academy.passed = true; paused = true;
+    qEl("ah-goal").hidden = true; qEl("ah-done").hidden = true;
+    qEl("ah-cert-title").textContent = t("ac_done_title");
+    qEl("ah-cert-sub").textContent = t("ac_done_sub");
+    qEl("ah-cert").hidden = false;
+  }
+  function academyAgain() { qEl("ah-cert").hidden = true; startLevel(0); }
+
   /* ---------------- UI wiring ---------------- */
   function setActive(list, active) {
     list.forEach((n) => { const on = n === active; n.classList.toggle("is-active", on); n.setAttribute("aria-pressed", on ? "true" : "false"); });
@@ -721,11 +862,14 @@
     inSpeedEl = inSpeed; inViscEl = inVisc; inAoaEl = inAoa;
 
     // mode switch + quiz controls
+    el("mode-sandbox").addEventListener("click", () => { if (quiz.active || academy.active) enterSandbox(); });
     el("mode-quiz").addEventListener("click", () => { if (!quiz.active) enterQuiz(); });
-    el("mode-sandbox").addEventListener("click", () => { if (quiz.active) enterSandbox(); });
+    el("mode-academy").addEventListener("click", () => { if (!academy.active) enterAcademy(); });
     qEl("q-next").addEventListener("click", onQuizNext);
     qEl("q-again").addEventListener("click", startQuiz);
     qEl("q-share").addEventListener("click", quizShare);
+    qEl("ah-next").addEventListener("click", onAcademyNext);
+    qEl("ah-again").addEventListener("click", academyAgain);
 
     // sync slider outputs with current params
     inSpeed.value = 65; applySpeed();
@@ -751,6 +895,7 @@
     // by the quiz (and vice versa)
     sandboxSim = window.WindTunnelSim.createSim(nx, ny);
     quizSim = window.WindTunnelSim.createSim(nx, ny);
+    academySim = window.WindTunnelSim.createSim(nx, ny);
     sim = sandboxSim;
     sim.setParams(u0FromSlider(65), nuFromSlider(35));
     sim.resetFlow();
@@ -777,6 +922,7 @@
     if (dtms > 0) fps = fps * 0.9 + (1000 / dtms) * 0.1;
     step();
     if (quiz.active && quiz.phase === "revealing" && now - quiz.revealAt > 2600) showVerdict();
+    if (academy.active) academyUpdate(dtms);
     updateReadouts(now, fps);
     requestAnimationFrame(frame);
   }
@@ -808,8 +954,9 @@
       readouts() {
         return { re: roRe.textContent, speed: roSpeed.textContent, drag: roDragWord.textContent, dragBar: roDragBar.style.width, lift: roLiftWord.textContent, liftBar: roLiftBar.style.width, regime: roRegime.textContent };
       },
-      quiz,
-      enterQuiz, enterSandbox,
+      quiz, academy,
+      enterQuiz, enterSandbox, enterAcademy,
+      academyTick: academyUpdate, acState() { return { active: academy.active, level: academy.level, passed: academy.passed }; },
       qAnswer: onQuizAnswer, qReveal: showVerdict, qNext: onQuizNext,
       qState() { return { phase: quiz.phase, round: quiz.round, score: quiz.score, streak: quiz.streak, answer: quiz.answer, type: quiz.scenario && quiz.scenario.type }; },
     };

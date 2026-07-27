@@ -47,9 +47,9 @@
   }
   </script>
 
-  <link rel="stylesheet" href="styles.css?v=5" />
+  <link rel="stylesheet" href="styles.css?v=6" />
   <script src="sim.js?v=5" defer></script>
-  <script src="app.js?v=5" defer></script>
+  <script src="app.js?v=6" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#canvas-wrap" data-i18n="skip_link">Skip to the tunnel</a>
@@ -83,7 +83,25 @@
       <div class="modebar" role="tablist" aria-label="Mode">
         <button id="mode-sandbox" class="mode-btn is-active" type="button" role="tab" aria-selected="true" data-i18n="mode_sandbox">🌀 Sandbox</button>
         <button id="mode-quiz" class="mode-btn" type="button" role="tab" aria-selected="false" data-i18n="mode_quiz">🎯 Guess the flow</button>
+        <button id="mode-academy" class="mode-btn" type="button" role="tab" aria-selected="false" data-i18n="mode_academy">🎓 Academy</button>
       </div>
+
+      <div class="academy-hud" id="academy-hud" hidden aria-live="polite">
+        <span class="ah-level" id="ah-level">—</span>
+        <h2 class="ah-title" id="ah-title">—</h2>
+        <p class="ah-brief" id="ah-brief">—</p>
+        <div class="ah-goal" id="ah-goal"><span class="ah-goal-icon" id="ah-goal-icon">◌</span><span id="ah-goal-text">—</span></div>
+        <div class="ah-done" id="ah-done" hidden>
+          <p class="ah-lesson" id="ah-lesson">—</p>
+          <button class="btn btn--primary" id="ah-next" type="button">Next →</button>
+        </div>
+        <div class="ah-cert" id="ah-cert" hidden>
+          <p class="ah-cert-title" id="ah-cert-title">—</p>
+          <p class="ah-cert-sub" id="ah-cert-sub">—</p>
+          <button class="btn" id="ah-again" type="button" data-i18n="ac_again">Replay chapter</button>
+        </div>
+      </div>
+
       <div id="canvas-wrap" class="canvas-wrap">
         <canvas id="view" class="view" aria-label="Wind tunnel simulation" data-i18n-aria="aria_sim"></canvas>
         <div id="regime-badge" class="regime-badge" aria-hidden="true">—</div>

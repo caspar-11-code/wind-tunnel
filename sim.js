@@ -207,35 +207,34 @@
     };
 
     // build a preset mask and diff it onto the grid (preserving surrounding flow)
-    S.stampPreset = function (shape, aoaDeg) {
-      const mask = new Uint8Array(N);
-      const cx = Math.round(nx * 0.34);
-      const cy = Math.round(ny * 0.5);
+    // Rasterise one shape into `mask` centred at (cx,cy). Shared by the
+    // single-shape preset and the two-shape (drag comparison) stamp.
+    function fillMask(mask, shape, aoaDeg, cx, cy, scale) {
+      const sc = scale || 1;
       const alpha = (aoaDeg) * Math.PI / 180; // +AoA -> nose up -> lift up (screen y is up)
       const ca = Math.cos(alpha), sa = Math.sin(alpha);
-
       if (shape === "circle") {
-        const R = Math.max(6, Math.round(ny * 0.11));
+        const R = Math.max(5, Math.round(ny * 0.11 * sc));
         for (let y = 1; y < ny - 1; y++) for (let x = 1; x < nx - 1; x++) {
           const dx = x - cx, dy = y - cy;
           if (dx * dx + dy * dy <= R * R) mask[x + y * nx] = 1;
         }
       } else if (shape === "square") {
-        const H = Math.max(10, Math.round(ny * 0.22)), Tk = Math.max(2, Math.round(ny * 0.03));
+        const H = Math.max(9, Math.round(ny * 0.22 * sc)), Tk = Math.max(2, Math.round(ny * 0.03 * sc));
         for (let y = 1; y < ny - 1; y++) for (let x = 1; x < nx - 1; x++) {
           const dx = x - cx, dy = y - cy;
           const xr = dx * ca - dy * sa, yr = dx * sa + dy * ca;
           if (Math.abs(xr) <= Tk && Math.abs(yr) <= H / 2) mask[x + y * nx] = 1;
         }
       } else if (shape === "ellipse") {
-        const A = Math.max(14, Math.round(ny * 0.26)), B = Math.max(6, Math.round(ny * 0.10));
+        const A = Math.max(12, Math.round(ny * 0.26 * sc)), B = Math.max(5, Math.round(ny * 0.10 * sc));
         for (let y = 1; y < ny - 1; y++) for (let x = 1; x < nx - 1; x++) {
           const dx = x - cx, dy = y - cy;
           const xr = dx * ca - dy * sa, yr = dx * sa + dy * ca;
           if ((xr * xr) / (A * A) + (yr * yr) / (B * B) <= 1) mask[x + y * nx] = 1;
         }
       } else if (shape === "airfoil") {
-        const Lc = Math.max(24, Math.round(nx * 0.22));
+        const Lc = Math.max(22, Math.round(nx * 0.22 * sc));
         const leX = cx - Lc * 0.5, leY = cy;
         for (let y = 1; y < ny - 1; y++) for (let x = 1; x < nx - 1; x++) {
           const dx = x - leX, dy = y - leY;
@@ -247,13 +246,43 @@
           if (yr >= yc - yt && yr <= yc + yt) mask[x + y * nx] = 1;
         }
       }
-
+    }
+    function applyMask(mask) {
       for (let i = 0; i < N; i++) {
         if (mask[i] && !barrier[i]) S.setCell(i, true);
         else if (!mask[i] && barrier[i]) S.setCell(i, false);
       }
       S.rebuildBarrierMeta();
       S.kick();
+    }
+
+    S.stampPreset = function (shape, aoaDeg) {
+      const mask = new Uint8Array(N);
+      fillMask(mask, shape, aoaDeg, Math.round(nx * 0.34), Math.round(ny * 0.5), 1);
+      applyMask(mask);
+    };
+
+    // Two shapes stacked vertically (a = upper, b = lower) — for the
+    // drag-comparison quiz. Each: { shape, aoa, cx, cy, scale } in fractions.
+    S.stampTwo = function (a, b) {
+      const mask = new Uint8Array(N);
+      fillMask(mask, a.shape, a.aoa || 0, Math.round(nx * (a.cx || 0.34)), Math.round(ny * a.cy), a.scale || 0.82);
+      fillMask(mask, b.shape, b.aoa || 0, Math.round(nx * (b.cx || 0.34)), Math.round(ny * b.cy), b.scale || 0.82);
+      applyMask(mask);
+    };
+
+    // Drag (pressure) on solid cells in a y-band [y0,y1) — lets the quiz
+    // score two stacked shapes independently.
+    S.pressureDragBand = function (y0, y1) {
+      let fx = 0;
+      const links = S.boundaryLinks;
+      for (let k = 0; k < links.length; k++) {
+        const i = links[k].i, d = links[k].d;
+        const yy = (i / nx) | 0;
+        if (yy < y0 || yy >= y1) continue;
+        fx += ((rho[i] - 1) / 3) * EX[d];
+      }
+      return fx;
     };
 
     // A brief, localised upward puff just behind the shape. Real wakes are

@@ -101,6 +101,10 @@
       ex_up: "The shape deflects air downward, so by reaction it is pushed up — that is lift.",
       ex_down: "The tilt deflects air upward, so the shape is pushed down.",
       ex_zero: "A symmetric shape head-on: the forces above and below cancel out.",
+      q_drag: "Which shape has the LOWER drag?",
+      q_info_drag: "On reveal, watch both wakes — a narrower wake means less drag.",
+      ex_drag: "The more streamlined shape leaves a narrower wake and has lower drag.",
+      n_circle: "Cylinder", n_square: "Flat plate", n_ellipse: "Teardrop", n_airfoil: "Airfoil",
     },
     pl: {
       brand_tag: "narysuj i puść w ruch",
@@ -188,12 +192,16 @@
       ex_up: "Kształt odchyla powietrze w dół, więc w reakcji jest pchany w górę — to siła nośna.",
       ex_down: "Przechylenie odchyla powietrze w górę, więc kształt jest spychany w dół.",
       ex_zero: "Kształt symetryczny na wprost: siły z góry i z dołu się znoszą.",
+      q_drag: "Który kształt stawia MNIEJSZY opór?",
+      q_info_drag: "Po odsłonie patrz na oba ślady — węższy ślad to mniejszy opór.",
+      ex_drag: "Bardziej opływowy kształt zostawia węższy ślad i ma mniejszy opór.",
+      n_circle: "Walec", n_square: "Płyta", n_ellipse: "Kropla", n_airfoil: "Profil",
     },
   };
 
   const HELP = {
     en: `
-      <p><strong>Wind Tunnel</strong> is a little slice of air, seen from the side. Air blows from the left. Draw any 2D shape and watch the flow bend around it in real time — with a real wake, separation and swirling vortices.</p>
+      <p><strong>Wind Tunnel</strong> is a little slice of air, seen from the side. Air blows from the left. Draw any 2D shape and watch the flow bend around it in real time — with a real wake, separation and swirling vortices. Play freely in <strong>🌀 Sandbox</strong>, or switch to <strong>🎯 Guess the flow</strong> to predict the physics and score points.</p>
       <h3>Do this</h3>
       <ul>
         <li><strong>Draw</strong> with your mouse or finger — hold and drag inside the tunnel. Or tap a preset: <em>Cylinder, Airfoil, Plate, Teardrop</em>.</li>
@@ -212,7 +220,7 @@
       <p class="muted">Honest limits: it's <strong>2D</strong> (no 3D effects like wingtip vortices), <strong>low-speed</strong> (incompressible — no sound or shock waves), has <strong>no turbulence model</strong> (very small eddies aren't resolved), and the forces are <strong>relative estimates</strong> (drag comes from surface pressure only — skin friction isn't included). Read it for intuition, not for certification.</p>
     `,
     pl: `
-      <p><strong>Tunel aerodynamiczny</strong> to kawałek powietrza widziany z boku. Wiatr wieje z lewej. Narysuj dowolny kształt 2D i patrz, jak strugi zakrzywiają się wokół niego w czasie rzeczywistym — z prawdziwym śladem, oderwaniem i wirami.</p>
+      <p><strong>Tunel aerodynamiczny</strong> to kawałek powietrza widziany z boku. Wiatr wieje z lewej. Narysuj dowolny kształt 2D i patrz, jak strugi zakrzywiają się wokół niego w czasie rzeczywistym — z prawdziwym śladem, oderwaniem i wirami. Baw się w trybie <strong>🌀 Piaskownica</strong> albo przełącz na <strong>🎯 Zgadnij</strong>, żeby przewidywać fizykę i zdobywać punkty.</p>
       <h3>Zrób tak</h3>
       <ul>
         <li><strong>Rysuj</strong> myszą lub palcem — przytrzymaj i przeciągnij w tunelu. Albo wybierz gotowy kształt: <em>Walec, Profil, Płyta, Kropla</em>.</li>
@@ -262,7 +270,8 @@
   }
 
   /* ---------------- state ---------------- */
-  let sim = null;
+  let sim = null;           // active solver (points at sandboxSim or quizSim)
+  let sandboxSim = null, quizSim = null;
   let fieldMode = "speed";
   let smokeOn = true;
   let tool = "draw";
@@ -314,7 +323,7 @@
     const nx = sim.nx, ny = sim.ny, ux = sim.ux, uy = sim.uy, rho = sim.rho, barrier = sim.barrier;
     const data = fieldImage.data;
     const smax = sim.u0 * 1.75 + 1e-6;
-    const curlScale = 22 / (sim.u0 + 0.02);
+    const curlScale = 30 / (sim.u0 + 0.02);
     for (let y = 0; y < ny; y++) {
       const py = ny - 1 - y;
       const rowOut = py * nx;
@@ -501,9 +510,15 @@
     { type: "lift", shape: "airfoil", speed: 70, visc: 25, aoa: -8, answer: "down" },
     { type: "lift", shape: "circle", speed: 70, visc: 30, aoa: 0, answer: "zero" },
     { type: "lift", shape: "square", speed: 70, visc: 30, aoa: 0, answer: "zero" },
+    // drag comparison: two shapes stacked; `low` has the lower drag (verified in Node)
+    { type: "drag2", low: "ellipse", high: "square", speed: 70, visc: 25 },
+    { type: "drag2", low: "airfoil", high: "circle", speed: 70, visc: 25 },
+    { type: "drag2", low: "airfoil", high: "square", speed: 70, visc: 25 },
+    { type: "drag2", low: "circle", high: "square", speed: 70, visc: 25 },
+    { type: "drag2", low: "airfoil", high: "ellipse", speed: 70, visc: 25 },
   ];
   const QKEY = "gt.tunnel.quiz";
-  const quiz = { active: false, phase: "idle", order: [], round: 0, total: 6, score: 0, streak: 0, maxStreak: 0, scenario: null, picked: null, revealAt: 0 };
+  const quiz = { active: false, phase: "idle", order: [], round: 0, total: 6, score: 0, streak: 0, maxStreak: 0, scenario: null, picked: null, answer: null, explainKey: null, revealAt: 0 };
   let quizBest = { best: 0, streak: 0, played: 0 };
   try { const s = JSON.parse(localStorage.getItem(QKEY) || "{}"); if (s && typeof s === "object") quizBest = Object.assign(quizBest, s); } catch { /**/ }
 
@@ -519,6 +534,8 @@
     document.querySelector(".readouts").style.display = "none";
     regimeBadge.style.display = "none";
     hideHint();
+    sim = quizSim;          // quiz drives its own solver; sandbox stays frozen & intact
+    initParticles();
     startQuiz();
   }
   function enterSandbox() {
@@ -529,10 +546,10 @@
     document.querySelector(".controls").hidden = false;
     document.querySelector(".readouts").style.display = "";
     regimeBadge.style.display = "";
-    if (inSpeedEl && inViscEl) sim.setParams(u0FromSlider(+inSpeedEl.value), nuFromSlider(+inViscEl.value));
-    if (inAoaEl) aoaDeg = +inAoaEl.value;
-    sim.resetFlow();
-    currentPreset = "airfoil"; sim.stampPreset("airfoil", aoaDeg);
+    sim = sandboxSim;       // resume the sandbox exactly where the user left it
+    initParticles();
+    const af = document.querySelector(".field-btn.is-active");
+    fieldMode = af ? af.dataset.field : "speed";
     paused = false;
   }
 
@@ -547,7 +564,16 @@
   function setupScenario(sc) {
     sim.setParams(u0FromSlider(sc.speed), nuFromSlider(sc.visc));
     sim.resetFlow();
-    sim.stampPreset(sc.shape, sc.aoa);
+    if (sc.type === "drag2") {
+      const flip = Math.random() < 0.5;
+      sc._top = flip ? sc.high : sc.low;
+      sc._bot = flip ? sc.low : sc.high;
+      sim.stampTwo({ shape: sc._top, cy: 0.70 }, { shape: sc._bot, cy: 0.30 });
+      fieldMode = "speed"; // wake width tells the drag story
+    } else {
+      sim.stampPreset(sc.shape, sc.aoa);
+      fieldMode = sc.type === "wake" ? "curl" : "speed"; // vorticity makes the street pop
+    }
     currentPreset = null;
     paused = true; // frozen until the player answers
   }
@@ -557,22 +583,32 @@
     const sc = quiz.order[quiz.round - 1];
     quiz.scenario = sc; quiz.picked = null; quiz.phase = "question";
     setupScenario(sc);
+    // resolve the correct answer + explanation for this scenario
+    if (sc.type === "drag2") { quiz.answer = (sc._top === sc.low) ? "top" : "bot"; quiz.explainKey = "ex_drag"; }
+    else { quiz.answer = sc.answer; quiz.explainKey = "ex_" + sc.answer; }
+
     qEl("q-round").textContent = t("q_round").replace("{n}", quiz.round).replace("{t}", quiz.total);
     qEl("q-score").textContent = t("q_scoreline").replace("{s}", quiz.score).replace("{k}", quiz.streak);
-    qEl("q-question").textContent = t(sc.type === "wake" ? "q_wake" : "q_lift");
+    qEl("q-question").textContent = t(sc.type === "wake" ? "q_wake" : sc.type === "lift" ? "q_lift" : "q_drag");
+
     if (sc.type === "wake") {
       const L = sim.charLength(); const Re = Math.round(sim.u0 * L / sim.nu);
       qEl("q-info").textContent = t("q_info_re").replace("{re}", Re);
-    } else {
+    } else if (sc.type === "lift") {
       qEl("q-info").textContent = t("q_info_lift");
+    } else {
+      qEl("q-info").textContent = t("q_info_drag");
     }
-    const opts = sc.type === "wake"
-      ? [["smooth", "opt_smooth"], ["street", "opt_street"]]
-      : [["up", "opt_up"], ["down", "opt_down"], ["zero", "opt_zero"]];
+
+    let opts;
+    if (sc.type === "wake") opts = [["smooth", t("opt_smooth")], ["street", t("opt_street")]];
+    else if (sc.type === "lift") opts = [["up", t("opt_up")], ["down", t("opt_down")], ["zero", t("opt_zero")]];
+    else opts = [["top", "▲ " + t("n_" + sc._top)], ["bot", "▼ " + t("n_" + sc._bot)]];
+
     const box = qEl("q-opts"); box.innerHTML = "";
-    opts.forEach(([val, key]) => {
+    opts.forEach(([val, label]) => {
       const b = document.createElement("button");
-      b.type = "button"; b.className = "q-opt"; b.dataset.val = val; b.textContent = t(key);
+      b.type = "button"; b.className = "q-opt"; b.dataset.val = val; b.textContent = label;
       b.addEventListener("click", () => onQuizAnswer(val));
       box.appendChild(b);
     });
@@ -591,18 +627,18 @@
 
   function showVerdict() {
     quiz.phase = "verdict"; paused = true;
-    const sc = quiz.scenario; const correct = quiz.picked === sc.answer;
+    const correct = quiz.picked === quiz.answer;
     if (correct) { quiz.score++; quiz.streak++; if (quiz.streak > quiz.maxStreak) quiz.maxStreak = quiz.streak; }
     else { quiz.streak = 0; }
     document.querySelectorAll("#q-opts .q-opt").forEach((b) => {
-      if (b.dataset.val === sc.answer) b.classList.add("is-correct");
+      if (b.dataset.val === quiz.answer) b.classList.add("is-correct");
       else if (b.dataset.val === quiz.picked) b.classList.add("is-wrong");
     });
     qEl("q-score").textContent = t("q_scoreline").replace("{s}", quiz.score).replace("{k}", quiz.streak);
     const v = qEl("q-verdict");
     v.textContent = correct ? t("q_correct") : t("q_wrong");
     v.className = "quiz__verdict " + (correct ? "ok" : "no");
-    qEl("q-explain").textContent = t("ex_" + sc.answer);
+    qEl("q-explain").textContent = t(quiz.explainKey);
     qEl("q-next").textContent = quiz.round < quiz.total ? t("q_next") : t("q_last");
     qEl("q-feedback").hidden = false;
   }
@@ -711,7 +747,11 @@
     const aspect = rect.width > 0 ? rect.width / rect.height : 2;
     const nx = Math.max(120, Math.min(320, Math.round(ny * aspect)));
     stepsPerFrame = mobile ? 7 : 10;
-    sim = window.WindTunnelSim.createSim(nx, ny);
+    // two independent solvers so the sandbox keeps its own state, untouched
+    // by the quiz (and vice versa)
+    sandboxSim = window.WindTunnelSim.createSim(nx, ny);
+    quizSim = window.WindTunnelSim.createSim(nx, ny);
+    sim = sandboxSim;
     sim.setParams(u0FromSlider(65), nuFromSlider(35));
     sim.resetFlow();
     fieldCanvas.width = nx; fieldCanvas.height = ny;
@@ -771,8 +811,17 @@
       quiz,
       enterQuiz, enterSandbox,
       qAnswer: onQuizAnswer, qReveal: showVerdict, qNext: onQuizNext,
-      qState() { return { phase: quiz.phase, round: quiz.round, score: quiz.score, streak: quiz.streak, answer: quiz.scenario && quiz.scenario.answer, type: quiz.scenario && quiz.scenario.type }; },
+      qState() { return { phase: quiz.phase, round: quiz.round, score: quiz.score, streak: quiz.streak, answer: quiz.answer, type: quiz.scenario && quiz.scenario.type }; },
     };
+
+    // first-time visitors get the instructions automatically (once)
+    try {
+      if (!localStorage.getItem("gt.tunnel.seen")) {
+        localStorage.setItem("gt.tunnel.seen", "1");
+        const m = el("modal-help");
+        if (m && typeof m.showModal === "function") setTimeout(() => { try { m.showModal(); } catch { /**/ } }, 400);
+      }
+    } catch { /**/ }
 
     requestAnimationFrame(frame);
   }

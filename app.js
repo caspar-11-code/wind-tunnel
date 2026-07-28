@@ -117,8 +117,9 @@
       ac_ch1_sub: "You've met the Reynolds number, streamlining and lift. Next: pressure, area and downforce.",
       ac_ch2_sub: "Pressure, frontal area and downforce — done. Next: efficiency and design.",
       ac_ch3_sub: "Lift-to-drag efficiency, the cost of over-angling, and designing your own shape — done.",
+      ac_ch4_sub: "The cruise-wing balance, the downforce trade-off, and a lifting wing of your own — done.",
       ac_final_title: "Academy complete 🎓",
-      ac_final_sub: "You've worked through the fundamentals of flow, drag and lift. More chapters coming later.",
+      ac_final_sub: "Four chapters down: flow, pressure, efficiency and design. You can read a wake, a pressure field and a lift curve — that's real aerodynamic intuition.",
       ac_again: "Replay academy",
       l1_title: "The Reynolds number",
       l1_brief: "Same Reynolds number = same flow pattern. Raise the wind speed and lower the viscosity until a vortex street forms behind the cylinder.",
@@ -159,6 +160,18 @@
       l9_now_preset: "your own drawing only — a preset doesn't count",
       l9_now_draw: "draw a shape in the tunnel",
       l9_now_small: "too small — draw it bigger",
+      l10_title: "The cruise wing",
+      l10_brief: "A real wing has to lift a lot AND fly efficiently. Tune the angle of attack until you get strong upward lift and a high lift-to-drag ratio at the same time.",
+      l10_goal: "Strong lift AND high L/D at once",
+      l10_lesson: "<strong>A cruise wing balances two things at once: enough lift to stay airborne, and a good L/D to stay efficient.</strong> Too little angle is efficient but barely lifts; too much lifts at a worse ratio. Real aircraft cruise at the sweet spot in between.",
+      l11_title: "F1 downforce",
+      l11_brief: "Tilt the wing the other way for downforce — but drag is the price. Angle it to get strong downforce while keeping the drag under control.",
+      l11_goal: "Strong downforce, drag under control",
+      l11_lesson: "<strong>Downforce glues a race car to the track — but every extra degree also piles on drag.</strong> Push too far and the drag runs away for little extra grip, so engineers take the most downforce they can before drag becomes the limit. (No sudden stall here — it's the honest drag trade-off, not a lift collapse.)",
+      l12_title: "Design a lifting wing",
+      l12_brief: "The finale — draw your own wing that lifts itself. A symmetric shape makes zero lift: arch the TOP and flatten the bottom (like a wing) until the lift arrow points up ▲. Draw a solid body, not a thin line — and if the lift points down, flip the curve.",
+      l12_goal: "Draw a shape that lifts up",
+      l12_lesson: "<strong>You built a wing.</strong> Lift comes from asymmetry: a symmetric shape balances top and bottom and makes none, but arch the top and the air is deflected downward — so the shape is pushed up. That top-vs-bottom difference (camber) is the heart of every wing. (A 2D pressure model — it shows the principle, not certified numbers.)",
     },
     pl: {
       brand_tag: "narysuj i puść w ruch",
@@ -262,8 +275,9 @@
       ac_ch1_sub: "Poznałeś liczbę Reynoldsa, opływowość i siłę nośną. Dalej: ciśnienie, pole czołowe i docisk.",
       ac_ch2_sub: "Ciśnienie, pole czołowe i docisk — zaliczone. Dalej: sprawność i projektowanie.",
       ac_ch3_sub: "Sprawność L/D, kara za zbyt duży kąt i projekt własnego kształtu — zaliczone.",
+      ac_ch4_sub: "Równowaga skrzydła krążowniczego, kompromis docisku i własne skrzydło nośne — zaliczone.",
       ac_final_title: "Akademia ukończona 🎓",
-      ac_final_sub: "Przeszedłeś podstawy przepływu, oporu i siły nośnej. Kolejne rozdziały później.",
+      ac_final_sub: "Cztery rozdziały za Tobą: przepływ, ciśnienie, sprawność i projekt. Umiesz odczytać ślad, pole ciśnienia i krzywą nośnej — to prawdziwa intuicja aerodynamiczna.",
       ac_again: "Powtórz akademię",
       l1_title: "Liczba Reynoldsa",
       l1_brief: "Ta sama liczba Reynoldsa = ten sam obraz przepływu. Podnoś prędkość wiatru i zmniejszaj lepkość, aż za walcem powstanie ścieżka wirów.",
@@ -304,6 +318,18 @@
       l9_now_preset: "tylko własny rysunek — preset się nie liczy",
       l9_now_draw: "narysuj kształt w tunelu",
       l9_now_small: "za mały — narysuj większy",
+      l10_title: "Skrzydło krążownicze",
+      l10_brief: "Prawdziwe skrzydło musi dawać dużą nośną I lecieć sprawnie. Dobierz kąt natarcia tak, by naraz mieć silną nośną w górę i wysoki stosunek nośnej do oporu.",
+      l10_goal: "Silna nośna i wysokie L/D naraz",
+      l10_lesson: "<strong>Skrzydło krążownicze godzi naraz dwie rzeczy: dość nośnej, by się utrzymać, i dobre L/D, by lecieć sprawnie.</strong> Za mały kąt jest sprawny, ale ledwo unosi; za duży unosi przy gorszym stosunku. Prawdziwe samoloty lecą w sweet-spocie pomiędzy.",
+      l11_title: "Docisk bolidu",
+      l11_brief: "Przechyl skrzydło w drugą stronę, by dociskać — ale opór to cena. Ustaw kąt tak, by mieć silny docisk, trzymając opór w ryzach.",
+      l11_goal: "Silny docisk, opór pod kontrolą",
+      l11_lesson: "<strong>Docisk przykleja bolid do toru — ale każdy dodatkowy stopień dokłada też oporu.</strong> Przesadzisz i opór ucieka przy znikomym zysku przyczepności, więc inżynierowie biorą maksimum docisku, zanim opór stanie się granicą. (Bez nagłego przeciągnięcia — to uczciwy kompromis oporu, nie załamanie nośnej.)",
+      l12_title: "Zaprojektuj skrzydło nośne",
+      l12_brief: "Finał — narysuj własne skrzydło, które samo się unosi. Kształt symetryczny nie daje nośnej: wygnij GÓRĘ i spłaszcz spód (jak skrzydło), aż strzałka nośnej wskaże w górę ▲. Rysuj pełną bryłę, nie cienką kreskę — a jeśli nośna jest w dół, odwróć wygięcie.",
+      l12_goal: "Narysuj kształt, który unosi w górę",
+      l12_lesson: "<strong>Zbudowałeś skrzydło.</strong> Nośna bierze się z asymetrii: kształt symetryczny równoważy górę i dół i nie daje nic, ale wygnij górę, a powietrze zostaje odchylone w dół — więc kształt jest pchany w górę. Ta różnica góra–dół (wygięcie, camber) to sedno każdego skrzydła. (Model 2D, ciśnieniowy — pokazuje zasadę, nie certyfikowane liczby.)",
     },
   };
 
@@ -861,6 +887,39 @@
         if (sim.charLength() < 10) return { met: false, now: t("l9_now_small") };
         const cd = relCd();
         return { met: cd > 0 && cd <= 4.2, now: dragWordFor(cd) };
+      },
+    },
+    // ---- Chapter 4: aerodynamics in practice (validated on both grids) ----
+    {
+      ch: 4, title: "l10_title", brief: "l10_brief", goalText: "l10_goal", lesson: "l10_lesson",
+      setup: { shape: "airfoil", speed: 70, visc: 30, aoa: 6 },
+      // dual goal: real upward lift AND good efficiency at once (band aoa 10..18, both grids)
+      check() {
+        const cl = relCl(), ld = relLD();
+        const met = cl >= 9 && ld >= 2.4;
+        return { met, now: (cl > 0.3 ? "▲ " + cl.toFixed(1) : cl < -0.3 ? "▼ " + (-cl).toFixed(1) : "≈ 0") + " · L/D " + ld.toFixed(1) };
+      },
+    },
+    {
+      ch: 4, title: "l11_title", brief: "l11_brief", goalText: "l11_goal", lesson: "l11_lesson",
+      setup: { shape: "airfoil", speed: 70, visc: 30, aoa: 0 },
+      // strong downforce AND drag kept under a cap (band aoa -13..-16, both grids)
+      check() {
+        const cl = relCl(), cd = relCd();
+        const met = cl <= -9.6 && cd <= 4.9;
+        return { met, now: (cl < -0.3 ? "▼ " + (-cl).toFixed(1) : cl > 0.3 ? "▲ " + cl.toFixed(1) : "≈ 0") + " · →" + (cd > 0 ? cd.toFixed(1) : "—") };
+      },
+    },
+    {
+      ch: 4, title: "l12_title", brief: "l12_brief", goalText: "l12_goal", lesson: "l12_lesson",
+      setup: { draw: true, speed: 70, visc: 25 },
+      // draw an asymmetric (cambered-up) shape that lifts itself; symmetric blob ~0 fails
+      check() {
+        if (currentPreset) return { met: false, now: t("l9_now_preset") };
+        if (!sim.hasShape) return { met: false, now: t("l9_now_draw") };
+        if (sim.charLength() < 10) return { met: false, now: t("l9_now_small") };
+        const cl = relCl();
+        return { met: cl >= 0.8, now: (cl > 0.3 ? "▲ " + cl.toFixed(1) : cl < -0.3 ? "▼ " + (-cl).toFixed(1) : "≈ 0") };
       },
     },
   ];

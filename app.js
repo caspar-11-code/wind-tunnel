@@ -66,6 +66,7 @@
       aria_lang: "Language",
       aria_help: "How it works",
       aria_windtunnel: "Wind tunnel",
+      app_h1: "Wind Tunnel — a 2D aerodynamics sandbox",
       aria_mode: "Mode",
       aria_quiz: "Guess the flow",
       aria_sim: "Wind tunnel simulation",
@@ -239,6 +240,7 @@
       aria_lang: "Język",
       aria_help: "Jak to działa",
       aria_windtunnel: "Tunel aerodynamiczny",
+      app_h1: "Tunel aerodynamiczny — piaskownica 2D",
       aria_mode: "Tryb",
       aria_quiz: "Zgadnij",
       aria_sim: "Symulacja tunelu aerodynamicznego",
@@ -649,7 +651,13 @@
     } else paintDisc(gx, gy, brush, tool === "draw");
     lastPt = { gx, gy };
   }
-  function onUp() { if (!drawing) return; drawing = false; lastPt = null; sim.rebuildBarrierMeta(); }
+  function onUp() {
+    if (!drawing) return;
+    drawing = false; lastPt = null; sim.rebuildBarrierMeta();
+    // in a wake level, the shape just changed — restart the wobble window so the
+    // reading reflects only the current drawing (no stale roar from a bulkier draft)
+    if (academy.active && ACADEMY[academy.level] && ACADEMY[academy.level].wake) wakeReset();
+  }
 
   function hideHint() { if (hintDraw) hintDraw.classList.add("is-hidden"); }
   function showHint() { if (hintDraw) hintDraw.classList.remove("is-hidden"); }
@@ -699,7 +707,7 @@
   function setModeUI(mode) {
     [["mode-sandbox", "sandbox"], ["mode-quiz", "quiz"], ["mode-academy", "academy"]].forEach(([id, m]) => {
       const b = el(id); const on = (m === mode);
-      b.classList.toggle("is-active", on); b.setAttribute("aria-selected", on ? "true" : "false");
+      b.classList.toggle("is-active", on); b.setAttribute("aria-pressed", on ? "true" : "false");
     });
     document.querySelector(".controls").hidden = (mode === "quiz");   // controls used in sandbox + academy
     qEl("quiz").hidden = (mode !== "quiz");
@@ -875,7 +883,9 @@
     if (!sim.bbox) return;
     const row = Math.round((sim.bbox.miny + sim.bbox.maxy) / 2);
     const col = Math.min(sim.nx - 2, sim.bbox.maxx + Math.round(2 * sim.charLength()));
-    wakeBuf.push(sim.uy[col + row * sim.nx]);
+    const idx = col + row * sim.nx;
+    if (sim.barrier[idx]) return;   // probe landed on a solid cell (shape drawn near the outflow) — skip
+    wakeBuf.push(sim.uy[idx]);
     if (wakeBuf.length > WAKE_W) wakeBuf.shift();
   }
   function wobble() {
@@ -1110,7 +1120,7 @@
       sim.stampPreset(currentPreset, aoaDeg);
       hideHint();
     }));
-    el("btn-clear").addEventListener("click", () => { sim.clearShape(); currentPreset = null; showHint(); });
+    el("btn-clear").addEventListener("click", () => { sim.clearShape(); currentPreset = null; wakeReset(); showHint(); });
 
     const inSpeed = el("in-speed"), outSpeed = el("out-speed");
     const applySpeed = () => { sim.setParams(u0FromSlider(+inSpeed.value), sim.nu); outSpeed.textContent = Math.round((+inSpeed.value - 20) / 80 * 100) + "%"; };

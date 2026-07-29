@@ -47,9 +47,9 @@
   }
   </script>
 
-  <link rel="stylesheet" href="styles.css?v=6" />
+  <link rel="stylesheet" href="styles.css?v=7" />
   <script src="sim.js?v=10" defer></script>
-  <script src="app.js?v=16" defer></script>
+  <script src="app.js?v=17" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#canvas-wrap" data-i18n="skip_link">Skip to the tunnel</a>
@@ -91,6 +91,7 @@
         <span class="ah-level" id="ah-level">—</span>
         <h2 class="ah-title" id="ah-title">—</h2>
         <p class="ah-brief" id="ah-brief">—</p>
+        <button class="ah-guide-btn" id="ah-guide" type="button" data-i18n="ac_guide">ℹ️ About this chapter</button>
         <div class="ah-goal" id="ah-goal"><span class="ah-goal-icon" id="ah-goal-icon">◌</span><span id="ah-goal-text">—</span></div>
         <div class="ah-done" id="ah-done" hidden>
           <p class="ah-lesson" id="ah-lesson">—</p>
@@ -248,6 +249,14 @@
       <button class="icon-btn" value="close" aria-label="Close" data-i18n-aria="aria_close">✕</button>
     </form>
     <div class="modal__body" id="help-body"></div>
+  </dialog>
+
+  <dialog id="modal-chapter" class="modal" aria-labelledby="chapter-title">
+    <form method="dialog" class="modal__head">
+      <h2 id="chapter-title">—</h2>
+      <button class="icon-btn" value="close" aria-label="Close" data-i18n-aria="aria_close">✕</button>
+    </form>
+    <div class="modal__body" id="chapter-body"></div>
   </dialog>
 
   <!-- live region for transient announcements -->

@@ -118,8 +118,9 @@
       ac_ch2_sub: "Pressure, frontal area and downforce — done. Next: efficiency and design.",
       ac_ch3_sub: "Lift-to-drag efficiency, the cost of over-angling, and designing your own shape — done.",
       ac_ch4_sub: "The cruise-wing balance, the downforce trade-off, and a lifting wing of your own — done.",
+      ac_ch5_sub: "You raised a Kármán vortex street, silenced it by streamlining, and drew your own — done.",
       ac_final_title: "Academy complete 🎓",
-      ac_final_sub: "Four chapters down: flow, pressure, efficiency and design. You can read a wake, a pressure field and a lift curve — that's real aerodynamic intuition.",
+      ac_final_sub: "Five chapters down: flow, pressure, efficiency, design and the vortex street. You can read a wake, a pressure field and a lift curve — and you know why a bluff body shakes. That's real aerodynamic intuition.",
       ac_again: "Replay academy",
       l1_title: "The Reynolds number",
       l1_brief: "Same Reynolds number = same flow pattern. Raise the wind speed and lower the viscosity until a vortex street forms behind the cylinder.",
@@ -172,6 +173,20 @@
       l12_brief: "The finale — draw your own wing that lifts itself. A symmetric shape makes zero lift: arch the TOP and flatten the bottom (like a wing) until the lift arrow points up ▲. Draw a solid body, not a thin line — and if the lift points down, flip the curve.",
       l12_goal: "Draw a shape that lifts up",
       l12_lesson: "<strong>You built a wing.</strong> Lift comes from asymmetry: a symmetric shape balances top and bottom and makes none, but arch the top and the air is deflected downward — so the shape is pushed up. That top-vs-bottom difference (camber) is the heart of every wing. (A 2D pressure model — it shows the principle, not certified numbers.)",
+      wake_wait: "wake forming…",
+      l13_title: "Unleash the vortex street",
+      l13_brief: "The finale — in the Vortices view. Behind a blunt cylinder in a fast stream the wake can't stay still: it breaks into a marching row of alternating spinning vortices. Let it build until the street roars.",
+      l13_goal: "Make the vortex street roar",
+      l13_lesson: "<strong>That is a Kármán vortex street.</strong> Above a critical Reynolds number a bluff body can't hold a steady wake — it sheds vortices alternately from each side, spinning opposite ways, in a steady rhythm. Real chimneys, cables and bridge decks feel exactly this: a periodic sideways push.",
+      l14_title: "Kill the vibration",
+      l14_brief: "That roaring street shoves the body sideways, over and over — the kind of push that once shook bridges apart. Same wind, same speed: switch to a streamlined shape and watch the wake fall silent.",
+      l14_goal: "Silence the wake (switch shape)",
+      l14_lesson: "<strong>Streamlining kills the shedding.</strong> A slender body lets the flow close in gently behind it instead of tearing away, so no alternating vortices form — and the periodic sideways force that rattles structures vanishes. Same speed, same Reynolds number: the shape alone did it.",
+      l15_title: "Draw your own storm",
+      l15_brief: "Capstone: draw your own body and make ITS wake roar. Blunt and bulky sheds a violent street; thin and streamlined stays calm. Draw a solid, chunky shape and watch the vortices tear off.",
+      l15_goal: "Draw a shape whose wake roars",
+      l15_now_small: "too small — draw a bigger body",
+      l15_lesson: "<strong>You command the wake.</strong> Bluffness sheds, streamlining doesn't. Now you can look at any shape in a flow and call it — quiet wake or vortex street, and why. That is the whole chapter in a single drawing.",
     },
     pl: {
       brand_tag: "narysuj i puść w ruch",
@@ -276,8 +291,9 @@
       ac_ch2_sub: "Ciśnienie, pole czołowe i docisk — zaliczone. Dalej: sprawność i projektowanie.",
       ac_ch3_sub: "Sprawność L/D, kara za zbyt duży kąt i projekt własnego kształtu — zaliczone.",
       ac_ch4_sub: "Równowaga skrzydła krążowniczego, kompromis docisku i własne skrzydło nośne — zaliczone.",
+      ac_ch5_sub: "Wzbudziłeś ulicę wirową Kármána, uciszyłeś ją opływowością i narysowałeś własną — zaliczone.",
       ac_final_title: "Akademia ukończona 🎓",
-      ac_final_sub: "Cztery rozdziały za Tobą: przepływ, ciśnienie, sprawność i projekt. Umiesz odczytać ślad, pole ciśnienia i krzywą nośnej — to prawdziwa intuicja aerodynamiczna.",
+      ac_final_sub: "Pięć rozdziałów za Tobą: przepływ, ciśnienie, sprawność, projekt i ulica wirowa. Umiesz odczytać ślad, pole ciśnienia i krzywą nośnej — i wiesz, dlaczego bryła drga. To prawdziwa intuicja aerodynamiczna.",
       ac_again: "Powtórz akademię",
       l1_title: "Liczba Reynoldsa",
       l1_brief: "Ta sama liczba Reynoldsa = ten sam obraz przepływu. Podnoś prędkość wiatru i zmniejszaj lepkość, aż za walcem powstanie ścieżka wirów.",
@@ -330,6 +346,20 @@
       l12_brief: "Finał — narysuj własne skrzydło, które samo się unosi. Kształt symetryczny nie daje nośnej: wygnij GÓRĘ i spłaszcz spód (jak skrzydło), aż strzałka nośnej wskaże w górę ▲. Rysuj pełną bryłę, nie cienką kreskę — a jeśli nośna jest w dół, odwróć wygięcie.",
       l12_goal: "Narysuj kształt, który unosi w górę",
       l12_lesson: "<strong>Zbudowałeś skrzydło.</strong> Nośna bierze się z asymetrii: kształt symetryczny równoważy górę i dół i nie daje nic, ale wygnij górę, a powietrze zostaje odchylone w dół — więc kształt jest pchany w górę. Ta różnica góra–dół (wygięcie, camber) to sedno każdego skrzydła. (Model 2D, ciśnieniowy — pokazuje zasadę, nie certyfikowane liczby.)",
+      wake_wait: "ślad się formuje…",
+      l13_title: "Rozpętaj ulicę wirową",
+      l13_brief: "Finał — w widoku Wiry. Za tępym cylindrem w szybkim strumieniu ślad nie może ustać: rozpada się na maszerujący rząd naprzemiennych wirów. Poczekaj, aż ulica wirowa rozhuśta się na dobre.",
+      l13_goal: "Rozhuśtaj ulicę wirową",
+      l13_lesson: "<strong>To ulica wirowa Kármána.</strong> Powyżej krytycznej liczby Reynoldsa tępe ciało nie utrzyma stabilnego śladu — odrywa wiry naprzemiennie z obu stron, wirujące w przeciwne strony, w równym rytmie. Kominy, liny i pomosty mostów czują dokładnie to: okresowe boczne pchnięcie.",
+      l14_title: "Zdław drgania",
+      l14_brief: "Ta rycząca ulica spycha ciało w bok, raz za razem — takie pchnięcie potrafiło rozhuśtać mosty. Ten sam wiatr, ta sama prędkość: przełącz na kształt opływowy i patrz, jak ślad cichnie.",
+      l14_goal: "Ucisz ślad (zmień kształt)",
+      l14_lesson: "<strong>Opływowość zabija odrywanie.</strong> Smukłe ciało pozwala przepływowi zamknąć się łagodnie z tyłu, zamiast się odrywać — więc naprzemienne wiry nie powstają, a okresowa siła boczna, która trzęsie konstrukcjami, znika. Ta sama prędkość, ta sama liczba Reynoldsa: zrobił to sam kształt.",
+      l15_title: "Narysuj własną burzę",
+      l15_brief: "Zwieńczenie: narysuj własne ciało i spraw, by JEGO ślad ryczał. Tępe i masywne odrywa gwałtowną ulicę; cienkie i opływowe pozostaje spokojne. Narysuj pełną, przysadzistą bryłę i patrz, jak wiry się odrywają.",
+      l15_goal: "Narysuj kształt, którego ślad ryczy",
+      l15_now_small: "za mały — narysuj większą bryłę",
+      l15_lesson: "<strong>Panujesz nad śladem.</strong> Tępość odrywa, opływowość nie. Teraz spojrzysz na dowolny kształt w przepływie i orzekniesz — spokojny ślad czy ulica wirowa, i dlaczego. To cały rozdział w jednym rysunku.",
     },
   };
 
@@ -834,6 +864,27 @@
   function relCl() { const L = sim.charLength(); const q = 0.5 * sim.u0 * sim.u0 * (L || 1); return (sim.hasShape && sim.warmup > 800 && q > 0) ? sim.Fy / q : 0; }
   function reNow() { const L = sim.charLength(); const Re = (L > 0 && sim.nu > 0) ? sim.u0 * L / sim.nu : 0; return Re; }
   function relLD() { return (sim.hasShape && sim.warmup > 800 && sim.Fx > 0.001) ? sim.Fy / sim.Fx : 0; }
+
+  /* ---- wake wobble (Chapter 5): peak-to-peak lateral velocity uy at a downstream
+     probe over a rolling window of frames — a relative indicator of vortex-street
+     strength. Sampled once per academy frame; only scored once the window is full. */
+  const WAKE_W = 220;                 // frames (~1.5 shedding periods on both grids)
+  let wakeBuf = [];
+  function wakeReset() { wakeBuf = []; }
+  function wakeSample() {
+    if (!sim.bbox) return;
+    const row = Math.round((sim.bbox.miny + sim.bbox.maxy) / 2);
+    const col = Math.min(sim.nx - 2, sim.bbox.maxx + Math.round(2 * sim.charLength()));
+    wakeBuf.push(sim.uy[col + row * sim.nx]);
+    if (wakeBuf.length > WAKE_W) wakeBuf.shift();
+  }
+  function wobble() {
+    if (wakeBuf.length < WAKE_W) return null;   // not enough history yet — don't score
+    let mn = Infinity, mx = -Infinity;
+    for (let i = 0; i < wakeBuf.length; i++) { const v = wakeBuf[i]; if (v < mn) mn = v; if (v > mx) mx = v; }
+    return mx - mn;
+  }
+  function wakeNow(w) { return (w == null) ? t("wake_wait") : "🌀 " + Math.round(w * 1000); }
   const ACADEMY = [
     // ---- Chapter 1: the basics ----
     {
@@ -922,6 +973,32 @@
         return { met: cl >= 0.8, now: (cl > 0.3 ? "▲ " + cl.toFixed(1) : cl < -0.3 ? "▼ " + (-cl).toFixed(1) : "≈ 0") };
       },
     },
+    // ---- Chapter 5: the vortex street (curl view; validated on both grids) ----
+    // wobble = peak-to-peak uy at the wake probe over WAKE_W frames (relative street strength)
+    {
+      ch: 5, wake: true, title: "l13_title", brief: "l13_brief", goalText: "l13_goal", lesson: "l13_lesson",
+      setup: { shape: "circle", speed: 100, visc: 10, aoa: 0, field: "curl" },
+      // strong, sustained Kármán street behind the cylinder
+      check() { const w = wobble(); return { met: w != null && w >= 0.015, now: wakeNow(w) }; },
+    },
+    {
+      ch: 5, wake: true, title: "l14_title", brief: "l14_brief", goalText: "l14_goal", lesson: "l14_lesson",
+      setup: { shape: "circle", speed: 100, visc: 10, aoa: 0, field: "curl" },
+      // same aggressive flow; silence the wake by switching to a streamlined shape
+      check() { const w = wobble(); return { met: w != null && w <= 0.007, now: wakeNow(w) }; },
+    },
+    {
+      ch: 5, wake: true, title: "l15_title", brief: "l15_brief", goalText: "l15_goal", lesson: "l15_lesson",
+      setup: { draw: true, speed: 100, visc: 10, aoa: 0, field: "curl" },
+      // draw your own bluff body that sheds a violent street
+      check() {
+        if (currentPreset) return { met: false, now: t("l9_now_preset") };
+        if (!sim.hasShape) return { met: false, now: t("l9_now_draw") };
+        if (sim.charLength() < 20) return { met: false, now: t("l15_now_small") };
+        const w = wobble();
+        return { met: w != null && w >= 0.035, now: wakeNow(w) };
+      },
+    },
   ];
   function levelsInChapter(ch) { return ACADEMY.filter((l) => l.ch === ch).length; }
   function indexInChapter(i) { const ch = ACADEMY[i].ch; let k = 0; for (let j = 0; j <= i; j++) if (ACADEMY[j].ch === ch) k++; return k; }
@@ -947,6 +1024,7 @@
     setLevelParams(lv.setup);
     aoaDeg = lv.setup.aoa || 0;
     sim.resetFlow();
+    wakeReset();
     if (lv.setup.draw) {
       sim.clearShape();                // this level asks the player to draw their own shape
       currentPreset = null;
@@ -969,6 +1047,7 @@
   function academyUpdate(dt) {
     if (!academy.active || academy.passed) return;
     const lv = ACADEMY[academy.level];
+    if (lv.wake) wakeSample();
     const r = lv.check();
     qEl("ah-goal-text").textContent = t(lv.goalText) + (r.now ? " — " + t("ac_now") + " " + r.now : "");
     const g = qEl("ah-goal");
@@ -1023,7 +1102,14 @@
     inBrush.addEventListener("input", () => { brush = +inBrush.value; outBrush.textContent = brush; });
     brush = +inBrush.value; outBrush.textContent = brush;
 
-    document.querySelectorAll(".preset").forEach((b) => b.addEventListener("click", () => { currentPreset = b.dataset.shape; sim.stampPreset(currentPreset, aoaDeg); hideHint(); }));
+    document.querySelectorAll(".preset").forEach((b) => b.addEventListener("click", () => {
+      currentPreset = b.dataset.shape;
+      // in a wake level, changing shape must start from a clean flow (flush the old
+      // vortex street) and reset the wobble window — otherwise a residual street lingers
+      if (academy.active) { sim.resetFlow(); wakeReset(); }
+      sim.stampPreset(currentPreset, aoaDeg);
+      hideHint();
+    }));
     el("btn-clear").addEventListener("click", () => { sim.clearShape(); currentPreset = null; showHint(); });
 
     const inSpeed = el("in-speed"), outSpeed = el("out-speed");
@@ -1044,7 +1130,7 @@
 
     const pb = el("btn-pause");
     pb.addEventListener("click", () => { paused = !paused; pb.textContent = paused ? t("resume") : t("pause"); });
-    el("btn-reset").addEventListener("click", () => { sim.resetFlow(); sim.kick(); announce(t("a_reset")); });
+    el("btn-reset").addEventListener("click", () => { sim.resetFlow(); sim.kick(); wakeReset(); announce(t("a_reset")); });
 
     view.addEventListener("pointerdown", onDown);
     view.addEventListener("pointermove", onMove);

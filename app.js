@@ -67,6 +67,15 @@
       aria_help: "How it works",
       aria_windtunnel: "Wind tunnel",
       app_h1: "Wind Tunnel — a 2D aerodynamics sandbox",
+      aria_privacy: "Privacy notice",
+      privacy_link: "Privacy",
+      privacy_title: "Privacy & legal",
+      privacy_clear: "Clear local data",
+      privacy_cleared: "Local data cleared.",
+      pb_text: "This site collects no personal data and uses no tracking. Local storage only remembers your language, settings and progress — on your device.",
+      pb_more: "Details",
+      pb_ok: "Got it",
+      privacy_body: "<p><strong>This is a free, non-commercial educational app.</strong> No accounts, no forms, no sign-in, no payments.</p><ul><li><strong>No personal data.</strong> The site does not collect, store or share any personal data. No advertising, no analytics (e.g. Google Analytics), no tracking cookies, no third parties.</li><li><strong>Local storage.</strong> To make the game work, your browser stores only your chosen language, settings and game progress. It stays on your device and is never sent anywhere. You can remove it anytime with the button below.</li><li><strong>Hosting.</strong> The site runs on Cloudflare Pages. Like any web host, Cloudflare processes technical connection data (e.g. your IP address) to deliver the page and protect against attacks — see the <a href='https://www.cloudflare.com/privacypolicy/' target='_blank' rel='noopener noreferrer'>Cloudflare privacy policy</a>.</li><li><strong>Your rights (GDPR / RODO).</strong> Because this site collects no personal data, there is nothing on our side to access, correct or delete. You keep your rights under the GDPR and may lodge a complaint with the Polish Data Protection Authority (<a href='https://uodo.gov.pl/' target='_blank' rel='noopener noreferrer'>PUODO</a>).</li><li><strong>Why there is no consent prompt.</strong> The local storage above is strictly necessary to provide the feature you asked for (remembering your settings and progress), so under the ePrivacy rules it needs no consent — this notice is for your information.</li></ul>",
       aria_mode: "Mode",
       aria_quiz: "Guess the flow",
       aria_sim: "Wind tunnel simulation",
@@ -253,6 +262,15 @@
       aria_help: "Jak to działa",
       aria_windtunnel: "Tunel aerodynamiczny",
       app_h1: "Tunel aerodynamiczny — piaskownica 2D",
+      aria_privacy: "Informacja o prywatności",
+      privacy_link: "Prywatność",
+      privacy_title: "Prywatność",
+      privacy_clear: "Wyczyść dane lokalne",
+      privacy_cleared: "Dane lokalne usunięte.",
+      pb_text: "Ten serwis nie zbiera danych osobowych i nie używa śledzenia. Pamięć lokalna zapamiętuje tylko język, ustawienia i postęp — na Twoim urządzeniu.",
+      pb_more: "Szczegóły",
+      pb_ok: "Rozumiem",
+      privacy_body: "<p><strong>To darmowa, niekomercyjna aplikacja edukacyjna.</strong> Bez kont, formularzy, logowania i płatności.</p><ul><li><strong>Brak danych osobowych.</strong> Serwis nie zbiera, nie przechowuje ani nie udostępnia żadnych danych osobowych. Bez reklam, bez analityki (np. Google Analytics), bez śledzących plików cookie, bez podmiotów trzecich.</li><li><strong>Pamięć lokalna.</strong> Aby gra działała, Twoja przeglądarka zapisuje jedynie wybrany język, ustawienia i postęp w grze. Zostają one na Twoim urządzeniu i nie są nigdzie wysyłane. Możesz je w każdej chwili usunąć przyciskiem poniżej.</li><li><strong>Hosting.</strong> Serwis działa na Cloudflare Pages. Jak każdy host, Cloudflare przetwarza techniczne dane połączenia (np. adres IP) w celu dostarczenia strony i ochrony przed atakami — zob. <a href='https://www.cloudflare.com/privacypolicy/' target='_blank' rel='noopener noreferrer'>politykę prywatności Cloudflare</a>.</li><li><strong>Twoje prawa (RODO).</strong> Ponieważ serwis nie zbiera danych osobowych, po naszej stronie nie ma czego udostępniać, poprawiać ani usuwać. Zachowujesz prawa wynikające z RODO i możesz wnieść skargę do <a href='https://uodo.gov.pl/' target='_blank' rel='noopener noreferrer'>PUODO</a>.</li><li><strong>Dlaczego nie ma pytania o zgodę.</strong> Powyższa pamięć lokalna jest niezbędna do świadczenia funkcji, o którą prosisz (zapamiętanie ustawień i postępów), więc zgodnie z przepisami ePrivacy nie wymaga zgody — ta informacja ma charakter informacyjny.</li></ul>",
       aria_mode: "Tryb",
       aria_quiz: "Zgadnij",
       aria_sim: "Symulacja tunelu aerodynamicznego",
@@ -1177,6 +1195,14 @@
     el("btn-help").addEventListener("click", openHelp);
     el("btn-how-footer").addEventListener("click", openHelp);
 
+    // privacy & legal notice (informational — functional storage needs no consent)
+    const privacyModal = el("modal-privacy");
+    const openPrivacy = () => { if (privacyModal && typeof privacyModal.showModal === "function") privacyModal.showModal(); };
+    el("btn-privacy-footer").addEventListener("click", openPrivacy);
+    el("pb-more").addEventListener("click", openPrivacy);
+    el("pb-ok").addEventListener("click", () => { const b = el("privacy-banner"); if (b) b.hidden = true; try { localStorage.setItem("gt.tunnel.privacyAck", "1"); } catch { /**/ } });
+    el("privacy-clear").addEventListener("click", () => { try { localStorage.clear(); } catch { /**/ } const c = el("privacy-cleared"); if (c) c.hidden = false; });
+
     // per-chapter guide: a deeper walk-through of the current chapter's topic
     const chapterModal = el("modal-chapter");
     el("ah-guide").addEventListener("click", () => {
@@ -1298,6 +1324,8 @@
         const m = el("modal-help");
         if (m && typeof m.showModal === "function") setTimeout(() => { try { m.showModal(); } catch { /**/ } }, 400);
       }
+      // first-visit privacy notice (shown as a non-blocking banner)
+      if (!localStorage.getItem("gt.tunnel.privacyAck")) { const b = el("privacy-banner"); if (b) b.hidden = false; }
     } catch { /**/ }
 
     requestAnimationFrame(frame);

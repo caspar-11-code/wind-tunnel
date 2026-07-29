@@ -406,6 +406,20 @@ input[type="range"]::-moz-range-thumb {
 .ah-guide-btn { display: inline-block; margin: 0 0 12px; padding: 4px 0; background: none; border: none; cursor: pointer; font: inherit; font-size: 0.8rem; color: var(--blue); }
 .ah-guide-btn:hover { text-decoration: underline; }
 .ah-guide-btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 3px; }
+
+/* privacy: first-visit banner + modal footer */
+.privacy-banner {
+  position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 60;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px;
+  max-width: 760px; margin: 0 auto; padding: 12px 16px;
+  background: var(--panel); border: 1px solid var(--line);
+  border-radius: 12px; box-shadow: 0 10px 34px rgba(0, 0, 0, 0.5);
+}
+.privacy-banner__text { margin: 0; flex: 1 1 260px; font-size: 0.82rem; line-height: 1.5; color: var(--text-dim); }
+.privacy-banner__btns { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+.modal__foot { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 16px; }
+.privacy-cleared { font-size: 0.82rem; color: var(--green); }
+.modal__body a { color: var(--blue); }
 .ah-goal {
   display: flex; align-items: center; gap: 8px;
   font-size: 0.86rem; font-weight: 600; color: var(--text);
